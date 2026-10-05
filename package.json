@@ -1,0 +1,8 @@
+{
+  "name": "kws-pinterest-proxy",
+  "private": true,
+  "description": "Netlify Functions proxy for the pinterest-design-research Claude Code skill — holds Pinterest API credentials/tokens server-side so the skill works from any project without local credentials.",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

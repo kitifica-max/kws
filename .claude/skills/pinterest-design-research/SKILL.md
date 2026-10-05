@@ -88,6 +88,12 @@ filtering.
   naming conventions, and suggested refresh cadence. Read alongside the taxonomy.
 - `references/design-system-output.md` — the exact Design System Brief template
   and the optional `tokens.json` schema. Read before writing the brief (step 6).
+- `references/remote-proxy.md` — optional: a small Netlify Functions proxy that
+  holds Pinterest credentials/tokens server-side so any project only needs a URL
+  + shared secret (no per-project OAuth), plus a cheap `/api/status` endpoint for
+  detecting new pins on a schedule. Read when the user wants the skill usable
+  across projects without re-doing OAuth, or wants auto-refresh when they add
+  pins (step 7).
 
 ## Script
 
@@ -98,3 +104,8 @@ filtering.
   the repo-root `.env` file directly — it never prints `access_token` or
   `refresh_token` to stdout, and nothing routes those values through the
   conversation.
+- `scripts/pinterest_proxy_client.py` — same `list-boards`/`pull` output shape,
+  but talks to the `references/remote-proxy.md` Netlify proxy instead of
+  Pinterest directly. Use this one once the proxy is deployed; it needs only
+  `PINTEREST_PROXY_URL` + `PINTEREST_PROXY_SECRET`, no Pinterest app
+  credentials locally. Also has a `status` subcommand for change detection.
