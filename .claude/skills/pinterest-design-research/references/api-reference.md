@@ -18,6 +18,28 @@
    `pins:write`/`boards:write`, but that's out of scope for the design-research
    workflow.)
 
+### Using one set of credentials across every project (optional)
+
+By default `pinterest_client.py` looks for `.env` in the current project (it
+walks up from `cwd` to the nearest git root). If you install this skill
+globally (`~/.claude/skills/pinterest-design-research`) and don't want to
+copy `.env` into every repo and redo the OAuth flow each time, point the
+script at one shared credentials file instead:
+
+```bash
+mkdir -p ~/.config/pinterest-design-research
+mv .env ~/.config/pinterest-design-research/.env   # move, don't copy —
+# two live .env files both refreshing the same refresh_token will race and
+# eventually invalidate each other
+
+echo 'export PINTEREST_DOTENV_PATH="$HOME/.config/pinterest-design-research/.env"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+With `PINTEREST_DOTENV_PATH` set, every command ignores the per-project
+`.env` lookup and always reads/writes that one file, from any directory —
+set up credentials once, use the skill in any project after that.
+
 ## 2. OAuth flow (one-time, then token refresh handles the rest)
 
 Pinterest uses standard OAuth 2.0 authorization code flow.
