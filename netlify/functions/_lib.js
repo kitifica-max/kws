@@ -16,7 +16,7 @@ function json(statusCode, body) {
 }
 
 function requireSecret(event) {
-  const expected = process.env.PROXY_SHARED_SECRET;
+  const expected = env("PROXY_SHARED_SECRET");
   if (!expected) {
     throw { statusCode: 500, message: "PROXY_SHARED_SECRET is not configured on this site." };
   }
@@ -49,9 +49,14 @@ async function saveTokens(tokens) {
   await tokenStore().setJSON("tokens.json", tokens);
 }
 
+function env(key) {
+  const v = process.env[key];
+  return v == null ? v : v.trim();
+}
+
 async function oauthTokenRequest(grantFields) {
-  const appId = process.env.PINTEREST_APP_ID;
-  const appSecret = process.env.PINTEREST_APP_SECRET;
+  const appId = env("PINTEREST_APP_ID");
+  const appSecret = env("PINTEREST_APP_SECRET");
   if (!appId || !appSecret) {
     throw { statusCode: 500, message: "PINTEREST_APP_ID / PINTEREST_APP_SECRET not configured on this site." };
   }
@@ -170,6 +175,7 @@ async function checkBoardChange(boardId, accessToken, { commit = false } = {}) {
 
 module.exports = {
   json,
+  env,
   requireSecret,
   stateStore,
   getTokens,

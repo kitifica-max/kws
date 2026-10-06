@@ -1,11 +1,11 @@
-const { json, requireSecret, oauthTokenRequest, saveTokens } = require("./_lib");
+const { json, env, requireSecret, oauthTokenRequest, saveTokens } = require("./_lib");
 
 exports.handler = async (event) => {
   try {
     requireSecret(event);
-    const code = event.queryStringParameters && event.queryStringParameters.code;
+    const code = (event.queryStringParameters && event.queryStringParameters.code || "").trim();
     if (!code) return json(400, { error: "Missing ?code=..." });
-    const redirectUri = process.env.PINTEREST_REDIRECT_URI;
+    const redirectUri = env("PINTEREST_REDIRECT_URI");
     if (!redirectUri) {
       return json(500, { error: "PINTEREST_REDIRECT_URI not configured on this site." });
     }
