@@ -1,0 +1,25 @@
+{
+  "name": "Pinterest Design Research",
+  "short_name": "Pinterest Design Research",
+  "description": "Plugin de Claude Code que convierte un board de Pinterest curado en un Design System Brief citado.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F1EADA",
+  "theme_color": "#E60023",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
