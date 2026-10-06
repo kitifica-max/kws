@@ -27,9 +27,9 @@ skill (steps 4–6) doesn't change.
    variables** and add:
    | Key | Value |
    |---|---|
-   | `PINTEREST_APP_ID` | `1586869` (your existing Pinterest app id) |
+   | `PINTEREST_APP_ID` | your existing Pinterest app's id |
    | `PINTEREST_APP_SECRET` | your Pinterest app secret |
-   | `PINTEREST_REDIRECT_URI` | `https://kitifica.com/` (already registered on the app) |
+   | `PINTEREST_REDIRECT_URI` | the redirect URI already registered on that app |
    | `PROXY_SHARED_SECRET` | any long random string you make up — this is what every project uses instead of real Pinterest credentials |
    | `PINTEREST_BOARD_ID` | `1115063257681091512` (the "UI Reference" board — used as the default for `/api/status`) |
 3. **Deploy site** (or trigger a redeploy after adding the env vars).
