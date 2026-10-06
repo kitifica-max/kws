@@ -1,0 +1,14 @@
+{
+  "name": "kws",
+  "description": "Claude Code plugins published by kitifica-max",
+  "owner": {
+    "name": "kitifica-max"
+  },
+  "plugins": [
+    {
+      "name": "pinterest-design-research",
+      "source": "./.claude",
+      "description": "Turns a curated Pinterest board into a structured, cited Design System Brief."
+    }
+  ]
+}
