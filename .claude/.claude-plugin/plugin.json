@@ -1,7 +1,7 @@
 {
   "name": "pinterest-design-research",
   "displayName": "Pinterest Design Research",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Turns a curated Pinterest board into a structured, cited Design System Brief — color, typography, layout, components, navigation, motion, data viz. No setup: no Pinterest account, no API keys, no OAuth.",
   "author": {
     "name": "kitifica-max"
