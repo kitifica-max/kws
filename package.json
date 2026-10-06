@@ -6,6 +6,6 @@
     "@netlify/blobs": "^8.1.0"
   },
   "scripts": {
-    "test": "node --test netlify/functions/_lib.test.js"
+    "test": "node --test tests/_lib.test.js"
   }
 }

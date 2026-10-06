@@ -1,4 +1,5 @@
 // Unit tests for the proxy's shared logic. Run with: npm test
+// Lives outside netlify/functions so Netlify never tries to deploy it as one.
 // @netlify/blobs is stubbed before _lib loads, so the tests need no Netlify
 // runtime and no Pinterest credentials.
 const { test, beforeEach } = require("node:test");
@@ -27,7 +28,7 @@ require.cache[blobsPath] = {
   exports: { getStore: (name) => storeFor(name), connectLambda: () => {} },
 };
 
-const lib = require("./_lib");
+const lib = require("../netlify/functions/_lib");
 
 const OWN_ENV = [
   "PINTEREST_BOARD_IDS",
