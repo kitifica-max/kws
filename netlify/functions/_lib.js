@@ -24,7 +24,10 @@ function requireSecret(event) {
     event.headers["x-proxy-secret"] ||
     event.headers["X-Proxy-Secret"] ||
     (event.queryStringParameters && event.queryStringParameters.secret);
-  if (got !== expected) {
+  // Trim both sides: a trailing newline/space picked up when copying the
+  // generated secret into Netlify's env var UI is a common, easy-to-miss
+  // way this comparison fails even with "the right" secret.
+  if (String(got || "").trim() !== String(expected || "").trim()) {
     throw { statusCode: 401, message: "Missing or invalid proxy secret." };
   }
 }
