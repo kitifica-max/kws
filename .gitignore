@@ -8,3 +8,7 @@
 design-research-workspace/
 __pycache__/
 *.pyc
+
+# Netlify functions proxy (netlify/functions) — local dev artifacts.
+node_modules/
+.netlify/
