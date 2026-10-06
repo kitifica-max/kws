@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <title>Pinterest Design Research</title>
+  <g transform="rotate(-12 256 256)">
+    <path fill="#E60023" d="M256 56 A200 200 0 0 1 456 256 A200 200 0 0 1 256 456 L78 456 A22 22 0 0 1 56 434 L56 256 A200 200 0 0 1 256 56 Z"/>
+  </g>
+</svg>
