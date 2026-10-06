@@ -1,21 +1,27 @@
 # Search & board taxonomy
 
 Two jobs: it decides **which design-system layers a given brief actually needs**
-(workflow step 2), and its layer names are exactly the **section names on the
-shared board** — so the sections that come back in `manifest.json` line up with
-the headings in `design-system-output.md` with no manual sorting.
+(workflow step 2), and its layer names are the **headings the brief ends up
+grouped by** — so whatever you extract lines up with
+`design-system-output.md` with no manual sorting.
 
 ## Board structure
 
-The plugin reads one shared board: `UI Reference`, one **section per
-design-system layer** (`Color & mood`, `Navigation`, `Motion &
-micro-interactions`, ...). Sections matter, not just a flat board: the proxy can
-list pins per-section (`GET /boards/{id}/sections/{section_id}/pins`), which is
-what turns a 160+ pin board into a brief organized by layer instead of one flat
-pile Claude has to re-sort by eye.
+The plugin reads one shared board, `UI Reference`. On Pinterest it can carry
+one **section per design-system layer** (`Color & mood`, `Navigation`,
+`Motion & micro-interactions`, ...), and when it does, the proxy lists pins
+per-section (`GET /boards/{id}/sections/{section_id}/pins`) — the manifest
+then arrives already grouped by layer.
 
-Nobody curates a board to use the skill — the corpus is already curated. The
-taxonomy is used to *read* it, not to build it.
+**Right now the board is flat** (`section_count: 0`, every `section_name` in
+`manifest.json` is `null`). That is not a broken pull — it just means grouping
+is your job in step 4: bucket the pins into these layers yourself using
+`title`/`description`/`alt_text`/`link`/`dominant_color`, and keep the same
+layer names so the brief's headings stay stable. Sections on the board are an
+optimization, not a requirement; nobody curates a board to use the skill —
+the corpus is already curated.
+
+The taxonomy is used to *read* the board, not to build it.
 
 ## Design-system layers × search query templates
 

@@ -12,7 +12,7 @@ filename>)` when the pin has no outbound link.
 ```markdown
 # Design System Brief — <project name>
 
-Generated from <N> curated pins across <N> board sections.
+Generated from <N> curated pins.
 
 ## Summary
 2-4 sentences: the overall visual direction these references converge on,
