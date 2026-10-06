@@ -1,7 +1,8 @@
-const { json, env, requireSecret, oauthTokenRequest, saveTokens } = require("./_lib");
+const { json, env, connectLambda, requireSecret, oauthTokenRequest, saveTokens } = require("./_lib");
 
 exports.handler = async (event) => {
   try {
+    connectLambda(event);
     requireSecret(event);
     const code = (event.queryStringParameters && event.queryStringParameters.code || "").trim();
     if (!code) return json(400, { error: "Missing ?code=..." });

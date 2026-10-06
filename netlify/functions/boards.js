@@ -1,7 +1,8 @@
-const { json, requireSecret, ensureAccessToken, pinterestGetAll } = require("./_lib");
+const { json, connectLambda, requireSecret, ensureAccessToken, pinterestGetAll } = require("./_lib");
 
 exports.handler = async (event) => {
   try {
+    connectLambda(event);
     requireSecret(event);
     const token = await ensureAccessToken();
     const boards = await pinterestGetAll("/boards", token);

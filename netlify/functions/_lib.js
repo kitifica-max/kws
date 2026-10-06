@@ -2,7 +2,10 @@
 // Holds no secrets of its own — everything comes from Netlify env vars
 // (set in the site's dashboard, never committed) and Netlify Blobs
 // (token/state storage, provisioned automatically for the site).
-const { getStore } = require("@netlify/blobs");
+// These functions use the classic Lambda-compat handler signature, so
+// Netlify Blobs isn't auto-connected — callers must invoke connectLambda(event)
+// first (see https://docs.netlify.com/functions/lambda-compatibility).
+const { getStore, connectLambda } = require("@netlify/blobs");
 
 const API_BASE = "https://api.pinterest.com/v5";
 const TOKEN_REFRESH_MARGIN_SECONDS = 600;
@@ -176,6 +179,7 @@ async function checkBoardChange(boardId, accessToken, { commit = false } = {}) {
 module.exports = {
   json,
   env,
+  connectLambda,
   requireSecret,
   stateStore,
   getTokens,

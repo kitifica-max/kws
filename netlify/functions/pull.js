@@ -1,7 +1,8 @@
-const { json, requireSecret, ensureAccessToken, pinterestGetAll, manifestEntry } = require("./_lib");
+const { json, connectLambda, requireSecret, ensureAccessToken, pinterestGetAll, manifestEntry } = require("./_lib");
 
 exports.handler = async (event) => {
   try {
+    connectLambda(event);
     requireSecret(event);
     const boardId = event.queryStringParameters && event.queryStringParameters.board_id;
     if (!boardId) return json(400, { error: "Missing ?board_id=..." });

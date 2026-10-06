@@ -3,10 +3,11 @@
 // GET /api/status?board_id=...&ack=1   -> peek AND commit the current state as the new
 //                                         baseline (call this right after successfully
 //                                         regenerating the Design System Brief)
-const { json, requireSecret, ensureAccessToken, checkBoardChange } = require("./_lib");
+const { json, connectLambda, requireSecret, ensureAccessToken, checkBoardChange } = require("./_lib");
 
 exports.handler = async (event) => {
   try {
+    connectLambda(event);
     requireSecret(event);
     const qs = event.queryStringParameters || {};
     const boardId = qs.board_id || process.env.PINTEREST_BOARD_ID;
