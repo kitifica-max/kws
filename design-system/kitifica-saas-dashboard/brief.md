@@ -1,10 +1,12 @@
 # Design System Brief — Kitifica SaaS Dashboard
 
-Generated from 164 curated pins in the Pinterest board "UI Reference" (account
+Generated from 294 curated pins in the Pinterest board "UI Reference" (account
 `idealandidl`, board id `1115063257681091512`), no sub-sections used — 136
-from the original pull, plus 28 added 2026-10-06 and incorporated in this
-refresh. Brief scoped for a **SaaS / dashboard product** with an
-**Enterprise/Corporate + Playful/Bold** vibe, per the user's brief.
+from the original pull, 28 added 2026-10-06 (morning refresh), and 130 more
+added 2026-10-06 (afternoon refresh, mostly motion/interaction references
+plus a large retro-hardware icon cluster — see Open questions / gaps). Brief
+scoped for a **SaaS / dashboard product** with an **Enterprise/Corporate +
+Playful/Bold** vibe, per the user's brief.
 
 ## Summary
 
@@ -201,6 +203,13 @@ same pill shape reused for status badges, filter chips, and tab switchers
 (sources: local `1115063189023186140.jpg`; local
 `1115063189023186103.jpg`, shape-language only per the caveat above).
 
+**Two-part variant (added 2026-10-06)**: a pill (label + fill color) with a
+separate, slightly darker circular badge overlapping its trailing edge,
+holding only a direction icon — seen specifically on upload/download
+actions. Reads as "the button and its icon are two layered shapes," not one
+flat pill with an icon inside it (source: local
+`1115063189023266773.jpg`).
+
 ### Greeting / identity header
 "Welcome back, [Name]" or first-name greeting paired with a small circular
 avatar, consistently placed top-right of the dashboard header (sources:
@@ -223,6 +232,17 @@ shown as plain text — used as a time-range selector above a chart, distinct
 from the pill-tab time switcher already documented above (source: local
 `1115063189023198172.jpg` "Faith Rosenberg" wellness tracker).
 
+### Loading & progress indicators (added 2026-10-06)
+Previously undocumented — the first curated reference for this component.
+One pin catalogs the family directly: partial-fill radial rings at several
+arc lengths (not full laps, i.e. a determinate spinner), a concentric
+double-ring variant, 3-dot sequences in bouncing/fading/growing weights, a
+single pulsing dot, and clock/hourglass iconography reused as a "waiting"
+motif rather than a literal time display. No single style dominates — treat
+this as a menu of options sharing one rule: always monochrome (black/grey on
+white), never tinted with the product's accent color (source: local
+`1115063189023266735.jpg`).
+
 ## States
 
 Weak signal — only the two AI-generated "styleguide" pins show explicit
@@ -234,12 +254,47 @@ not any specific value from those two pins (source: local
 
 ## Motion & micro-interactions
 
-Unconfirmed — no video or GIF pins were in this pull, so nothing here is
-directly observable. A small number of pin titles/links reference "hover"
-or "animation" only in the context of the AI-concept styleguide pins, which
-are themselves unreliable (see Typography caveat). If motion detail matters,
-this is the layer to re-curate specifically (e.g. search "dashboard micro
-interaction gif", "chart animation UI") rather than infer from this pull.
+**Update 2026-10-06 (afternoon refresh)**: the user curated a batch of 130
+pins specifically for this layer. All are still static images (no video/GIF
+pins), so exact timing/easing stays unconfirmed, but several pins show
+*designed* interaction states directly, which the original pull had none of:
+
+- **Button/control hover state, shown via cursor position**: five separate
+  pins place a visible cursor next to a control to indicate its interactive
+  state — a pill CTA ("Learn More"), a nav tab row, a "Submit" pill, a
+  rounded "Play" pill, and a duration field with a small edit-pencil icon
+  all show the cursor resting on or just past the target, implying a
+  hover/press moment rather than documenting its visual change (no
+  before/after pair in any of them) (sources: local
+  `1115063189023266757.jpg` "Buttons interactions"; local
+  `1115063189023266753.jpg` "Button Hover"; local
+  `1115063189023266810.jpg`; local `1115063189023266764.jpg`; local
+  `1115063189023266782.jpg`).
+- **Upload/download button, two-part composition**: a pill button (label +
+  fill color) with a separate circular icon badge overlapping its trailing
+  edge, holding just the direction arrow — a distinct button-building
+  pattern from the single-fill pills documented elsewhere in this brief,
+  built for a click target that's visually two affordances in one (source:
+  local `1115063189023266773.jpg` "Download buttons #2 — Micro-interactions
+  for different styles of rounded download/upload buttons").
+- **Loading / progress indicator library** (added to Core components below
+  too): a single pin catalogs ~20 loading-state variants — partial-fill
+  radial rings (multiple arc lengths), concentric double-rings, pulsing/
+  bouncing 3-dot sequences in several weights, a single pulsing dot, and
+  clock/hourglass/cuckoo-clock iconography used as waiting metaphors (source:
+  local `1115063189023266735.jpg`).
+- **Logo reveal animations**: two pins are explicitly animated logo intros
+  ("HEVOLTZ LOGO motion"; "Minimal logo animation forming from dots — a
+  minimalist logo reveal") — both static frames of a presumably GIF/video
+  source, so only the *existence* of a dot-formation reveal style is
+  confirmed, not its timing (sources: local `1115063189023267079.jpg`; local
+  `1115063189023266993.jpg`).
+
+Net effect: treat "a button has a visible pressed/hover state" and "loading
+states use radial-ring, multi-dot, and pulsing-dot patterns" as confirmed
+design intent; treat any specific duration, easing curve, or transform (how
+fast, how far, what curve) as still unconfirmed — check the live link if
+that detail matters.
 
 ## Data visualization
 
@@ -273,20 +328,61 @@ interaction gif", "chart animation UI") rather than infer from this pull.
   expense/income breakdown rather than a dashboard metric, but the same
   "label-on-bar, no axis" convention as the dashboard bar charts above
   (source: local `1115063189023198264.jpg` "MyWallet Mobile App Concept").
+- **Extruded/"clay" 3D donut chart** (added 2026-10-06): a different
+  rendering of the same donut/radial pattern already documented — modeled
+  with soft 3D shading (rounded, physically-lit, drop-shadowed) in a
+  pastel orange/teal/cream palette, rather than the flat-fill rings seen
+  elsewhere in this brief. Appears alongside tactile 3D buttons/knobs in
+  the same pin, so treat it as part of a broader "soft 3D" surface
+  treatment, not a standalone chart variant (source: local
+  `1115063189023236465.jpg` "Soft 3D UI Kit for Human-Centered SaaS
+  Products" — thin coverage, one pin only, flagged in Open questions /
+  gaps rather than written up as a confirmed pattern).
 
 ## Open questions / gaps
 
-- **Scope dilution**: of 164 pins, a majority are outside SaaS-dashboard
+- **Scope dilution**: of 294 pins, a majority are outside SaaS-dashboard
   scope (magazine/editorial layouts, fashion e-commerce, furniture/product
   sites, personal iOS lock-screen widgets, portfolio sites, food/product
-  packaging). This brief only drew on the subset that matched "SaaS/
-  dashboard + enterprise/playful." If more precision is wanted, recommend a
-  follow-up curation pass scoped tightly to admin dashboards and fintech
-  product UI (the skill's `references/search-taxonomy.md` has ready query
-  templates for this). Of the 28 pins added 2026-10-06, 7 were cited above
-  and the remaining 21 (portfolio sites, e-commerce catalogs, event/food
-  landing pages, app-icon/game grids) were out of scope and set aside the
-  same way.
+  packaging, and — as of the 2026-10-06 afternoon batch — a large
+  retro-hardware icon cluster, see below). This brief only drew on the
+  subset that matched "SaaS/dashboard + enterprise/playful." If more
+  precision is wanted, recommend a follow-up curation pass scoped tightly to
+  admin dashboards and fintech product UI (the skill's
+  `references/search-taxonomy.md` has ready query templates for this). Of
+  the first 28 pins added 2026-10-06, 7 were cited above and the remaining
+  21 were out of scope and set aside the same way.
+- **Retro-hardware / Dieter Rams icon cluster (new, 2026-10-06 afternoon
+  batch, ~35 of 130 new pins)**: a large, coherent set of skeuomorphic
+  icons and renders modeled on Braun consumer electronics — cream/white
+  device bodies, a single orange accent (knobs, buttons, highlight
+  elements), dot-matrix speaker-grille textures, and 7-segment LCD digit
+  displays (clocks, radios, calculators, alarm/tuner UIs), explicitly
+  credited as a Dieter Rams tribute in two of the pins' own titles/
+  descriptions (sources: local `1115063189023240929.jpg` "Rams System
+  Icons"; local `1115063189023237140.jpg` "Braun KLWP theme — A tribute to
+  Dieter Rams"). This is fully outside the SaaS-dashboard scope — it's
+  physical-product iconography, not app UI — but it's too large a share of
+  this batch (over a quarter of the new pins) to silently drop. Flagging it
+  explicitly in case it signals a direction the user actually wants pursued
+  (e.g. a retro/skeuomorphic icon set or onboarding illustration style) —
+  if so, it needs its own scoped brief, not folding into this one.
+- **Generative/particle background textures (new, thin coverage)**: a
+  handful of pins (dot-grid fields, flow-field noise, halftone blobs) read
+  as frames from animated or shader-driven backgrounds, likely meant for
+  marketing/landing hero sections rather than dashboard UI. Noted as a
+  possible texture layer for marketing surfaces, not analyzed in depth —
+  too few pins and no two share a clear common style to write up as a
+  pattern (sources: local `1115063189023267085.jpg` "Free Motion
+  Background"; local `1115063189023266945.jpg` "Reacting grid animation").
+- **"Liquid glass" and soft-3D/claymorphism surfaces (new, thin coverage)**:
+  one generic stock "Liquid Glass Interface" vector kit (frosted/translucent
+  panels, local `1115063189023241172.jpg`) and one "Soft 3D UI Kit for
+  Human-Centered SaaS Products" pin (extruded, physically-lit controls and a
+  3D donut chart, local `1115063189023236465.jpg`, also cited under Data
+  visualization). Both are single-pin signals — real alternate surface
+  treatments to the two modes this brief documents, but not enough evidence
+  yet to write up as confirmed patterns.
 - **Pricing tables**: was an open gap as of the first pull — now resolved,
   see Core components above.
 - **Light vs. dark as one system or two**: the pins don't show a single
@@ -328,10 +424,28 @@ interaction gif", "chart animation UI") rather than infer from this pull.
 | Faith Rosenberg wellness tracker (added 2026-10-06) | Faith Rosenberg | [dribbble](https://dribbble.com/faith_in_web) | `images/1115063189023198172.jpg` |
 | Miros — About Us Page (added 2026-10-06) | Miros SaaS Website Template | [temlis.com](https://www.temlis.com/templates/miros) | `images/1115063189023198383.jpg` |
 | Saasify — SaaS UI Kit landing page (added 2026-10-06) | Premium Dashboard UI Kits | [behance](https://www.behance.net/gallery/228846877/Premium-Dashboard-UI-Kits?saas-ui-kit-modern-landing-page-for-conversions) | `images/1115063189023198367.jpg` |
+| Buttons interactions (added 2026-10-06 pm) | Buttons interactions | [codepen](https://codepen.io/coopergoeke/pen/wvaYMbJ) | `images/1115063189023266757.jpg` |
+| Button Hover (added 2026-10-06 pm) | Button Hover | [codepen](https://codepen.io/kathykato/pen/rZRaNe) | `images/1115063189023266753.jpg` |
+| "Play" pill, cursor state (added 2026-10-06 pm) | (untitled) | — | `images/1115063189023266810.jpg` |
+| Nav tab row, cursor state (added 2026-10-06 pm) | (untitled) | [qclay.design](https://qclay.design/) | `images/1115063189023266764.jpg` |
+| Duration field, edit-pencil cursor (added 2026-10-06 pm) | (untitled) | — | `images/1115063189023266782.jpg` |
+| Download buttons #2 (added 2026-10-06 pm) | Download buttons #2 | [uimovement.com](https://uimovement.com/design/upload-buttons/) | `images/1115063189023266773.jpg` |
+| Loading indicator library (added 2026-10-06 pm) | (untitled) | — | `images/1115063189023266735.jpg` |
+| HEVOLTZ LOGO motion (added 2026-10-06 pm) | HEVOLTZ LOGO motion | [behance](https://www.behance.net/gallery/209300795/Hevoltz) | `images/1115063189023267079.jpg` |
+| CyberMind logo animation (added 2026-10-06 pm) | Minimal logo animation forming from dots | [behance](https://www.behance.net/gallery/237381611/CyberMind) | `images/1115063189023266993.jpg` |
+| Rams System Icons (added 2026-10-06 pm, off-scope) | 超拟物图标 \| Rams System Icons | [behance](https://www.behance.net/gallery/242098083/-Rams-System-Icons) | `images/1115063189023240929.jpg` |
+| Braun KLWP theme (added 2026-10-06 pm, off-scope) | Braun KLWP theme | [dribbble](https://dribbble.com/shots/597337-Braun-UI) | `images/1115063189023237140.jpg` |
+| Soft 3D UI Kit (added 2026-10-06 pm) | Soft 3D UI Kit for Human-Centered SaaS Products | [untitledui.com](https://www.untitledui.com/?atp=IYtByr) | `images/1115063189023236465.jpg` |
+| "Liquid Glass Interface" stock kit (added 2026-10-06 pm) | (Adobe Stock contributor page, not descriptive) | — | `images/1115063189023241172.jpg` |
+| Free Motion Background (added 2026-10-06 pm) | Free Motion Background | — | `images/1115063189023267085.jpg` |
+| Reacting grid animation (added 2026-10-06 pm) | Reacting grid animation | — | `images/1115063189023266945.jpg` |
 
 All 136 pins from the original pull were reviewed via contact-sheet
 thumbnails to select the first cited subset (12 pins received
-full-resolution review). The 28 pins added 2026-10-06 were all reviewed via
-a labeled contact sheet plus full-resolution review of the 6 cited above;
-the remaining 21 were out of SaaS-dashboard scope (see Open questions /
-gaps).
+full-resolution review). The 28 pins added 2026-10-06 (morning) were all
+reviewed via a labeled contact sheet plus full-resolution review of the 6
+cited above; the remaining 21 were out of SaaS-dashboard scope. The 130
+pins added 2026-10-06 (afternoon) were reviewed via 3 labeled contact
+sheets plus full-resolution review of the 15 cited above; the retro-hardware
+cluster (~35 pins) and most of the remaining pins were out of scope or too
+thin a signal to cite individually (see Open questions / gaps).
