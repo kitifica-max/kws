@@ -10,23 +10,23 @@
   /* layout: ruled grid system (hairline-divided cells) + numbered full-bleed color-band
      sections, lifted from a pin on the board itself ("Design & Code with Synergy") */
   :root{
-    --bg:#F0ECDE; --ink:#16210D; --ink-dim:#5B6350; --line:rgba(22,33,13,.22);
-    --lime:#D7EC3E; --pink:#F7BBDB; --green:#63D97E; --red:#E60023;
-    --surface:#FAF8F1; --code-bg:#16210D; --code-ink:#EFE9D4;
+    --bg:#F1EADA; --ink:#1C1712; --ink-dim:#6B5F4D; --line:rgba(28,23,18,.22);
+    --red:#E60023; --maroon:#7A1220; --charcoal:#241F1A; --rust:#A8471F; --tan:#C9AF7A;
+    --surface:#FAF6EC; --code-bg:#1C1712; --code-ink:#F1EADA;
     color-scheme:light;
   }
   @media (prefers-color-scheme: dark){
     :root:not([data-theme="light"]){
-      --bg:#14190F; --ink:#EEEADA; --ink-dim:#9CA48B; --line:rgba(238,234,218,.18);
-      --lime:#C9E23A; --pink:#E89FC9; --green:#4DC06A; --red:#FF4863;
-      --surface:#1B2114; --code-bg:#0D100A; --code-ink:#E9E2CC;
+      --bg:#16120D; --ink:#F1EADA; --ink-dim:#B2A58C; --line:rgba(241,234,218,.18);
+      --red:#FF4863; --maroon:#B8324A; --charcoal:#3A332B; --rust:#C97A4A; --tan:#D9C690;
+      --surface:#211B15; --code-bg:#0D0A07; --code-ink:#F1EADA;
       color-scheme:dark;
     }
   }
   :root[data-theme="dark"]{
-    --bg:#14190F; --ink:#EEEADA; --ink-dim:#9CA48B; --line:rgba(238,234,218,.18);
-    --lime:#C9E23A; --pink:#E89FC9; --green:#4DC06A; --red:#FF4863;
-    --surface:#1B2114; --code-bg:#0D100A; --code-ink:#E9E2CC;
+    --bg:#16120D; --ink:#F1EADA; --ink-dim:#B2A58C; --line:rgba(241,234,218,.18);
+    --red:#FF4863; --maroon:#B8324A; --charcoal:#3A332B; --rust:#C97A4A; --tan:#D9C690;
+    --surface:#211B15; --code-bg:#0D0A07; --code-ink:#F1EADA;
     color-scheme:dark;
   }
 
@@ -116,22 +116,21 @@
   .numsec .head h2{font-size:clamp(24px,4vw,34px);font-weight:700;letter-spacing:-.01em}
   .numsec .body{padding:10px 20px 36px}
   @media (min-width:640px){ .numsec .body{padding:10px 40px 44px} }
-  .numsec.band{background:var(--green);color:#0D1A0F}
-  .numsec.band .ink-dim-local{color:#17331D}
-  .numsec.band2{background:var(--pink);color:#2E0E1E}
+  .numsec.band{background:var(--red);color:#FBEDEA}
+  .numsec.band2{background:var(--charcoal);color:#F1EADA}
   .section-lead{color:var(--ink-dim);max-width:60ch;font-size:15.5px;margin-bottom:26px}
-  .numsec.band .section-lead, .numsec.band2 .section-lead{color:inherit;opacity:.78}
+  .numsec.band .section-lead, .numsec.band2 .section-lead{color:inherit;opacity:.75}
 
   /* brief preview */
   .brief-card{background:var(--surface);border:1.5px solid var(--line);border-radius:4px;padding:26px 28px}
-  .numsec.band .brief-card, .numsec.band2 .brief-card{background:rgba(255,255,255,.88);color:#16210D;border-color:rgba(0,0,0,.12)}
+  .numsec.band .brief-card, .numsec.band2 .brief-card{background:rgba(255,255,255,.88);color:#1C1712;border-color:rgba(0,0,0,.12)}
   .brief-card .title{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;margin-bottom:5px}
   .brief-card .meta{font-size:12.5px;color:var(--ink-dim);margin-bottom:18px}
-  .numsec.band .brief-card .meta, .numsec.band2 .brief-card .meta{color:#5B6350}
+  .numsec.band .brief-card .meta, .numsec.band2 .brief-card .meta{color:#6B5F4D}
   .tag-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
   .tag{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;background:var(--bg);
     border:1px solid var(--line);color:var(--ink-dim)}
-  .numsec.band .tag, .numsec.band2 .tag{background:#F0ECDE;border-color:rgba(0,0,0,.12);color:#5B6350}
+  .numsec.band .tag, .numsec.band2 .tag{background:#F1EADA;border-color:rgba(0,0,0,.12);color:#6B5F4D}
   .quote{border-left:3px solid var(--red);padding-left:16px;font-size:14.5px;font-style:italic}
   .quote cite{display:block;margin-top:8px;font-style:normal;font-size:12px;color:var(--ink-dim)}
 
@@ -150,22 +149,24 @@
   .path-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--line);border:1.5px solid var(--line);margin-top:4px}
   @media (max-width:640px){ .path-grid{grid-template-columns:1fr} }
   .path{background:var(--surface);padding:22px;border:1.5px solid var(--line);border-radius:4px}
-  .numsec.band2 .path{background:rgba(255,255,255,.88);color:#16210D}
+  .numsec.band2 .path{background:rgba(255,255,255,.88);color:#1C1712}
   .path .badgeline{font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
   .path h3{font-size:16px;margin-bottom:4px;font-family:'Unbounded',sans-serif;font-weight:500}
   .path .sub{font-size:12.5px;color:var(--ink-dim);margin-bottom:16px}
-  .numsec.band2 .path .sub{color:#5B6350}
+  .numsec.band2 .path .sub{color:#6B5F4D}
   .path ol{margin:0;padding-left:0;list-style:none;display:grid;gap:14px}
   .path li{font-size:13.5px}
   .path li .lbl{display:block;font-weight:700;margin-bottom:5px}
 
   .say-it{background:var(--surface);border:1.5px solid var(--line);border-radius:4px;padding:18px 22px;font-size:15px;position:relative}
   .say-it::before{content:"\201C";position:absolute;top:0;left:16px;font-family:'Unbounded',sans-serif;font-size:40px;color:var(--red);opacity:.4}
-  .say-it p{margin:0;padding-left:26px;font-style:italic}
+  .say-it p{margin:0;padding-left:26px;font-style:italic;color:var(--ink)}
   .say-it p + p{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .numsec.band .say-it, .numsec.band2 .say-it{background:rgba(255,255,255,.88);border-color:rgba(0,0,0,.12)}
+  .numsec.band .say-it p, .numsec.band2 .say-it p{color:#1C1712}
   .invoke{font-size:12.5px;color:var(--ink-dim);margin-top:16px;line-height:1.6}
   .invoke code{color:inherit;background:rgba(0,0,0,.08);padding:2px 6px;border-radius:4px}
-  .numsec.band2 .invoke code{background:rgba(0,0,0,.08)}
+  .numsec.band .invoke code, .numsec.band2 .invoke code{background:rgba(255,255,255,.14)}
 
   footer{padding:30px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
     font-size:12.5px;color:var(--ink-dim)}
@@ -187,10 +188,10 @@
   </div>
 
   <div class="swatch-strip">
-    <div class="sw light" style="background:var(--lime)"><span class="hex">#D7EC3E</span></div>
-    <div class="sw light" style="background:var(--pink)"><span class="hex">#F7BBDB</span></div>
-    <div class="sw light" style="background:var(--green)"><span class="hex">#63D97E</span></div>
     <div class="sw" style="background:var(--red)"><span class="hex">#E60023</span></div>
+    <div class="sw" style="background:var(--maroon)"><span class="hex">#7A1220</span></div>
+    <div class="sw" style="background:var(--charcoal)"><span class="hex">#241F1A</span></div>
+    <div class="sw light" style="background:var(--tan)"><span class="hex">#C9AF7A</span></div>
   </div>
 
   <div class="lead-row">
@@ -206,10 +207,10 @@
   </div>
 
   <div class="feat-strip" id="how">
-    <div class="feat"><div class="blob drop" style="background:var(--lime)"></div><h3>1 · Instalas el plugin</h3><p>Un comando. Nada que clonar.</p></div>
-    <div class="feat"><div class="blob pill" style="background:var(--pink)"></div><h3>2 · Ya está conectado</h3><p>El board de referencias viene enlazado desde el instalar. Nada que configurar, ninguna cuenta que crear.</p></div>
-    <div class="feat"><div class="blob diamond" style="background:var(--green)"></div><h3>3 · Dices qué construyes</h3><p>Claude ya tiene el board curado — 164+ pines y creciendo. No hay nada que pinear de cero.</p></div>
-    <div class="feat"><div class="blob clover" style="color:var(--red)"></div><h3>4 · Recibes el brief</h3><p>Color, tipografía, layout, nav, componentes, estados, motion — en <code>brief.md</code> y <code>tokens.json</code>.</p></div>
+    <div class="feat"><div class="blob drop" style="background:var(--red)"></div><h3>1 · Instalas el plugin</h3><p>Un comando. Nada que clonar.</p></div>
+    <div class="feat"><div class="blob pill" style="background:var(--rust)"></div><h3>2 · Ya está conectado</h3><p>El board de referencias viene enlazado desde el instalar. Nada que configurar, ninguna cuenta que crear.</p></div>
+    <div class="feat"><div class="blob diamond" style="background:var(--tan)"></div><h3>3 · Dices qué construyes</h3><p>Claude ya tiene el board curado — 164+ pines y creciendo. No hay nada que pinear de cero.</p></div>
+    <div class="feat"><div class="blob clover" style="color:var(--maroon)"></div><h3>4 · Recibes el brief</h3><p>Color, tipografía, layout, nav, componentes, estados, motion — en <code>brief.md</code> y <code>tokens.json</code>.</p></div>
   </div>
 
   <div class="numsec">
