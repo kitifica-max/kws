@@ -1,9 +1,10 @@
 # Design System Brief — Kitifica SaaS Dashboard
 
-Generated from 136 curated pins in the Pinterest board "UI Reference" (account
-`idealandidl`, board id `1115063257681091512`), no sub-sections used. Brief
-scoped for a **SaaS / dashboard product** with an **Enterprise/Corporate +
-Playful/Bold** vibe, per the user's brief.
+Generated from 164 curated pins in the Pinterest board "UI Reference" (account
+`idealandidl`, board id `1115063257681091512`), no sub-sections used — 136
+from the original pull, plus 28 added 2026-10-06 and incorporated in this
+refresh. Brief scoped for a **SaaS / dashboard product** with an
+**Enterprise/Corporate + Playful/Bold** vibe, per the user's brief.
 
 ## Summary
 
@@ -21,10 +22,14 @@ saturation, not structure — so the practical read is "one component system,
 switchable between a quiet light theme and a loud dark theme," not two
 unrelated styles.
 
-A large share of the 136 pins (editorial magazine layouts, fashion
+A large share of the 164 pins (editorial magazine layouts, fashion
 e-commerce, furniture/product sites, personal iOS lock-screen widgets) are
 outside the SaaS-dashboard scope and were set aside for this brief — see
-**Open questions / gaps**.
+**Open questions / gaps**. The 2026-10-06 batch added a third, softer
+direction worth tracking alongside the two above: a **pastel "consumer
+health/finance" mode** (muted mint/coral/lavender full-screen backgrounds,
+mascot illustrations, rounded pill charts) seen in mobile wallet and
+wellness-tracker pins — see Color and Navigation below for what's new.
 
 ## Color
 
@@ -59,6 +64,33 @@ outside the SaaS-dashboard scope and were set aside for this brief — see
   mostly in the marketing/landing pins rather than the dashboard pins
   (sources: local `1115063189023186368.jpg` "Play & Public"; local
   `1115063189023186360.jpg` "Laurits").
+- **Secondary accent, light/enterprise mode — orange/coral** (approx.
+  `#F2622E`–`#F5803D`): a second viable accent for the light mode alongside
+  indigo, used for progress rings, delta badges, and one primary CTA pill,
+  always on white card surfaces rather than color-blocked (source: local
+  `1115063189023198346.jpg` "Neura — Sales Dashboard Widget", added
+  2026-10-06).
+- **Bold mode, third background option — vivid saturated blue**
+  (approx. `#1465FF`): a full-bleed brand-color background used the same
+  structural way as the near-black bold mode (white/dark floating cards on
+  top, one lime-green accent circle reused from the existing lime token) —
+  treat as a brand-color swap on the same bold-mode skeleton, not a new
+  mode (source: local `1115063189023198334.jpg` "Katana — SaaS & UX UI
+  Design", added 2026-10-06).
+- **New third mode — pastel "consumer health/finance"**: muted,
+  desaturated full-screen backgrounds (mint `#9BCDAE`-ish, coral-pink
+  `#E8897E`-ish, lavender `#B9A7D9`-ish) used per-context (one color per
+  screen/category) rather than as a single app-wide palette, paired with a
+  warm mustard-yellow (`#F0B429`-ish) bottom nav bar and white content
+  cards — distinct from both the light/enterprise off-white and the
+  dark/bold near-black-or-blue modes (source: local
+  `1115063189023198172.jpg` "Faith Rosenberg" wellness tracker, added
+  2026-10-06). A related mascot-illustration variant uses flat saturated
+  marigold/orange (`#F5B22C`-ish) and periwinkle-blue (`#8690E0`-ish)
+  block backgrounds with semantic-shaped category badges — hexagon for
+  expense, gear for income, circle for savings (source: local
+  `1115063189023198264.jpg` "MyWallet Mobile App Concept", added
+  2026-10-06).
 
 Both modes read as intentional, not contradictory — the bold/dark mode
 belongs to fintech-flavored product moments (banking, savings, revenue), the
@@ -114,6 +146,12 @@ clinical/ops dashboards).
   ~16–20px side padding; card stacks sometimes overlap slightly (peek of
   next card) to hint scrollability (source: local `1115063189023185526.jpg`
   "Paytin").
+- **Hero mockup presentation**: on marketing/landing hero sections, product
+  screenshots are shown as small floating cards tilted at a slight angle
+  (not axis-aligned), each with four small corner dots like a selection/
+  annotation marker — a presentation convention, not a product UI pattern
+  itself (source: local `1115063189023198383.jpg` "Miros — About Us Page",
+  added 2026-10-06).
 
 ## Navigation
 
@@ -125,11 +163,19 @@ clinical/ops dashboards).
 - **Landing pages**: simple top navbar — logo left, text links center or
   right, single filled pill CTA button far right (source: local
   `1115063189023185145.jpg` "Financial Match").
-- **Mobile**: no persistent bottom tab bar observed in the cited pins;
-  navigation is scroll- and card-based, with horizontal pill tabs for
+- **Mobile**: the original 136-pin pull showed no persistent bottom tab
+  bar; navigation was scroll- and card-based, with horizontal pill tabs for
   time-range switching (e.g. "Today / Weekly / Monthly / Yearly") appearing
   inside the content area rather than as global nav (source: local
-  `1115063189023186110.jpg` "Cardiology" top pill-tab row).
+  `1115063189023186110.jpg` "Cardiology" top pill-tab row). **Update
+  2026-10-06**: one pin does show a persistent bottom tab bar — a full-width
+  pill/rounded-rectangle bar in the screen's accent color (not neutral),
+  holding 5 icon-only items, present identically across all 3 screens of
+  the flow (source: local `1115063189023198172.jpg` "Faith Rosenberg"
+  wellness tracker). Treat this as a real but still minority pattern (1 of
+  28 new pins, 0 of the original 136) — not yet strong enough evidence to
+  recommend bottom-tab nav as the default, but no longer accurate to say
+  it's unobserved.
 
 ## Core components
 
@@ -160,6 +206,23 @@ same pill shape reused for status badges, filter chips, and tab switchers
 avatar, consistently placed top-right of the dashboard header (sources:
 local `1115063189023186140.jpg`; local `1115063189023185526.jpg`).
 
+### Pricing tables (added 2026-10-06)
+Previously an open gap (no pin showed pricing) — now covered: a row of 3
+flat-white cards (Starter / Pro / Business), the middle "most popular" tier
+visually promoted by inverting it to a dark card with a small pill badge,
+while the two side tiers stay light — same light-vs-bold contrast language
+as the rest of the system, applied to a single component instead of two
+whole screens. Each tier: price as the dominant large numeral, a solid
+pill CTA button, and a short checklist with checkmark icons (source: local
+`1115063189023198367.jpg` "Saasify — SaaS UI Kit landing page").
+
+### Calendar / day-picker row (added 2026-10-06)
+A horizontal Mon–Sun strip of day labels + numbers, the current/selected
+day shown as a filled circle (inverted color) against the other six days
+shown as plain text — used as a time-range selector above a chart, distinct
+from the pill-tab time switcher already documented above (source: local
+`1115063189023198172.jpg` "Faith Rosenberg" wellness tracker).
+
 ## States
 
 Weak signal — only the two AI-generated "styleguide" pins show explicit
@@ -189,16 +252,43 @@ interaction gif", "chart animation UI") rather than infer from this pull.
 - Numbers-as-hero pattern described under Typography also applies here:
   the single most important metric on a dashboard pin is almost always
   rendered as oversized text rather than as a chart.
+- **Pill-top bar chart** (added 2026-10-06): vertical bars with fully
+  rounded tops and bottoms (capsule shape, not a rectangle), value label
+  floating directly above each bar, one color per chart tinted to the
+  screen's accent (green/coral/purple across 3 screens of one flow) —
+  reinforces the "no gridlines, label-on-value" pattern already documented
+  but with a softer, more rounded bar silhouette than the existing
+  bar-chart citation (source: local `1115063189023198172.jpg` "Faith
+  Rosenberg").
+- **Orange-accent radial ring + stacked horizontal bars** (added
+  2026-10-06): same donut/radial-progress pattern already documented, now
+  also seen in orange on a white card (not just the lime/indigo examples);
+  same pin also shows a horizontal "value by category" bar row (4
+  categories, one bar highlighted/promoted in the accent color, others
+  muted grey) as a new chart type for category comparison (source: local
+  `1115063189023198346.jpg` "Neura — Sales Dashboard Widget").
+- **Multi-color category bar chart** (added 2026-10-06): 4 short vertical
+  bars, one flat color per category rather than one consistent chart
+  color, each bar directly labeled with a percentage — used for an
+  expense/income breakdown rather than a dashboard metric, but the same
+  "label-on-bar, no axis" convention as the dashboard bar charts above
+  (source: local `1115063189023198264.jpg` "MyWallet Mobile App Concept").
 
 ## Open questions / gaps
 
-- **Scope dilution**: of 136 pins, a majority are outside SaaS-dashboard
+- **Scope dilution**: of 164 pins, a majority are outside SaaS-dashboard
   scope (magazine/editorial layouts, fashion e-commerce, furniture/product
-  sites, personal iOS lock-screen widgets). This brief only drew on the
-  subset that matched "SaaS/dashboard + enterprise/playful." If more
-  precision is wanted, recommend a follow-up curation pass scoped tightly to
-  admin dashboards and fintech product UI (the skill's
-  `references/search-taxonomy.md` has ready query templates for this).
+  sites, personal iOS lock-screen widgets, portfolio sites, food/product
+  packaging). This brief only drew on the subset that matched "SaaS/
+  dashboard + enterprise/playful." If more precision is wanted, recommend a
+  follow-up curation pass scoped tightly to admin dashboards and fintech
+  product UI (the skill's `references/search-taxonomy.md` has ready query
+  templates for this). Of the 28 pins added 2026-10-06, 7 were cited above
+  and the remaining 21 (portfolio sites, e-commerce catalogs, event/food
+  landing pages, app-icon/game grids) were out of scope and set aside the
+  same way.
+- **Pricing tables**: was an open gap as of the first pull — now resolved,
+  see Core components above.
 - **Light vs. dark as one system or two**: the pins don't show a single
   product switching between both modes — they're two different products
   each committing fully to one mode. Whether the target product should
@@ -232,6 +322,16 @@ interaction gif", "chart animation UI") rather than infer from this pull.
 | Paytin | (untitled) | — | `images/1115063189023185526.jpg` |
 | "Your Partner in Smarter Financial Decisions" landing | Diseño de Landing Page Impactante para Resultados Efectivas | [payhip](https://payhip.com/SaaSPitchStudioSaaSPresentation/...) | `images/1115063189023185149.jpg` |
 | Financial Match | Step-by-Step Token Fintech landing page Builder Guide | [theworldaccordingtome.org](https://www.theworldaccordingtome.org/2930470_ultimate-creative-web-ui-kits-twitch-stream-overlay-collection/?step-by-step-token-fintech-landing-pagebuilder-guide) | `images/1115063189023185145.jpg` |
+| Neura — Sales Dashboard Widget (added 2026-10-06) | Pixels With Purpose | [behance](https://www.behance.net/gallery/251345533/Pixels-With-Purpose/?neura-sales-dashboard-widget) | `images/1115063189023198346.jpg` |
+| Katana — SaaS & UX UI Design (added 2026-10-06) | Katana Branding UX/UI Trial Period | [behance](https://www.behance.net/gallery/175324957/Katana-Branding-UXUI-Trial-Period) | `images/1115063189023198334.jpg` |
+| MyWallet Mobile App Concept (added 2026-10-06) | (untitled) | [dribbble](https://dribbble.com/shots/22556370-MyWallet-Mobile-App-Concept) | `images/1115063189023198264.jpg` |
+| Faith Rosenberg wellness tracker (added 2026-10-06) | Faith Rosenberg | [dribbble](https://dribbble.com/faith_in_web) | `images/1115063189023198172.jpg` |
+| Miros — About Us Page (added 2026-10-06) | Miros SaaS Website Template | [temlis.com](https://www.temlis.com/templates/miros) | `images/1115063189023198383.jpg` |
+| Saasify — SaaS UI Kit landing page (added 2026-10-06) | Premium Dashboard UI Kits | [behance](https://www.behance.net/gallery/228846877/Premium-Dashboard-UI-Kits?saas-ui-kit-modern-landing-page-for-conversions) | `images/1115063189023198367.jpg` |
 
-All 136 pins were reviewed via contact-sheet thumbnails to select this
-cited subset; the 12 pins above received full-resolution review.
+All 136 pins from the original pull were reviewed via contact-sheet
+thumbnails to select the first cited subset (12 pins received
+full-resolution review). The 28 pins added 2026-10-06 were all reviewed via
+a labeled contact sheet plus full-resolution review of the 6 cited above;
+the remaining 21 were out of SaaS-dashboard scope (see Open questions /
+gaps).
