@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+# Pinterest Design Research — https://pinplug.kitifica.com
 Sitemap: https://pinplug.kitifica.com/sitemap.xml

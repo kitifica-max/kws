@@ -3,64 +3,43 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pinterest Design Research</title>
-<meta name="description" content="Plugin de Claude Code que convierte un board de Pinterest ya curado en un Design System Brief citado: color, tipografía, layout, componentes y motion. Un comando para instalar, sin clonar nada.">
-<meta name="robots" content="index, follow">
+<title>Pinterest Design Research — Design System Brief con Claude</title>
+<meta name="description" content="Design System Brief citado con color, tipografía, layout y motion: instala el plugin de Claude Code y usa el board ya curado de Pinterest (250+ pines).">
 <link rel="canonical" href="https://pinplug.kitifica.com/">
+<meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+<meta name="author" content="Kitifica">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F1EADA">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#16120D">
 
-<!-- Favicons -->
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<!-- favicon -->
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate icon" href="/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="manifest" href="/site.webmanifest">
-<meta name="theme-color" content="#E60023">
 
-<!-- Open Graph -->
+<!-- Open Graph (WhatsApp, LinkedIn, Facebook, Slack) -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://pinplug.kitifica.com/">
 <meta property="og:site_name" content="Pinterest Design Research">
 <meta property="og:locale" content="es_ES">
-<meta property="og:title" content="Convierte tus pines en un design system">
-<meta property="og:description" content="Plugin de Claude Code que convierte un board de Pinterest ya curado en un Design System Brief citado. Un comando para instalar, sin clonar nada.">
+<meta property="og:url" content="https://pinplug.kitifica.com/">
+<meta property="og:title" content="De lo mejor de UI en Pinterest a un design system">
+<meta property="og:description" content="El plugin de Claude Code que lee el board de referencias ya curado y lo convierte en un Design System Brief citado: brief.md y tokens.json con color, tipografía, layout, componentes y motion.">
 <meta property="og:image" content="https://pinplug.kitifica.com/og-image.png">
+<meta property="og:image:type" content="image/png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Pinterest Design Research — convierte tus pines en un design system">
+<meta property="og:image:alt" content="De lo mejor de UI en Pinterest a un design system — plugin pinterest-design-research para Claude Code">
+<meta property="og:image:secure_url" content="https://pinplug.kitifica.com/og-image.png">
 
-<!-- Twitter Card -->
+<!-- Twitter / X -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Convierte tus pines en un design system">
-<meta name="twitter:description" content="Plugin de Claude Code que convierte un board de Pinterest ya curado en un Design System Brief citado.">
+<meta name="twitter:title" content="De lo mejor de UI en Pinterest a un design system">
+<meta name="twitter:description" content="El plugin de Claude Code que lee el board de referencias ya curado y lo convierte en un Design System Brief citado: brief.md y tokens.json con color, tipografía, layout, componentes y motion.">
 <meta name="twitter:image" content="https://pinplug.kitifica.com/og-image.png">
+<meta name="twitter:image:alt" content="De lo mejor de UI en Pinterest a un design system — plugin pinterest-design-research para Claude Code">
 
-<!-- Structured data -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  "name": "Pinterest Design Research",
-  "alternateName": "pinterest-design-research",
-  "description": "Plugin de Claude Code que convierte un board de Pinterest ya curado en un Design System Brief citado: color, tipografía, layout, componentes y motion.",
-  "url": "https://pinplug.kitifica.com/",
-  "image": "https://pinplug.kitifica.com/og-image.png",
-  "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "Any",
-  "offers": {
-    "@type": "Offer",
-    "price": "0",
-    "priceCurrency": "USD"
-  },
-  "publisher": {
-    "@type": "Organization",
-    "name": "kitifica-max",
-    "url": "https://github.com/kitifica-max/kws"
-  }
-}
-</script>
-
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap">
 <style>
   /* layout: ruled grid system (hairline-divided cells) + numbered full-bleed color-band
@@ -108,7 +87,8 @@
   @media (min-width:560px){ .topbar .hint{display:block} }
 
   /* ---- hero grid ---- */
-  .hero{display:grid;grid-template-columns:1fr 1fr}
+  .hero{display:grid;grid-template-columns:1fr 1fr;font-size:clamp(34px,6.4vw,58px);font-weight:700;
+    line-height:.98;letter-spacing:-.01em}
   @media (max-width:640px){ .hero{grid-template-columns:1fr} }
   .hero .cell{padding:22px 20px;border-bottom:1.5px solid var(--line)}
   @media (min-width:640px){ .hero .cell{padding:30px 40px} }
@@ -118,8 +98,8 @@
     background-size:22px 22px;border-right:1.5px solid var(--line);
     display:flex;align-items:center;justify-content:center;min-height:120px}
   @media (max-width:640px){ .hero .texture{border-right:none;border-bottom:1.5px solid var(--line);min-height:90px} }
-  .hero h1{font-size:clamp(34px,6.4vw,58px);font-weight:700;line-height:.98;letter-spacing:-.01em}
   .hero .cell.r{border-right:1.5px solid var(--line)}
+  .hero .accent{color:var(--red)}
   @media (max-width:640px){ .hero .cell.r{border-right:none} }
 
   .blob{width:54px;height:54px;flex:none}
@@ -153,6 +133,9 @@
     text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:transform .15s ease}
   .btn:hover{transform:translateY(-2px)}
   .btn.primary{background:var(--ink);color:var(--bg)}
+  .ico{width:16px;height:16px;display:block;flex:none}
+  .ico-sm{width:13px;height:13px;display:block;flex:none}
+  .ext{display:inline-flex;align-items:center;gap:4px}
 
   /* ---- feature strip (4 steps) ---- */
   .feat-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1.5px solid var(--line)}
@@ -229,19 +212,84 @@
   @media (min-width:640px){ footer{padding:30px 40px} }
   footer a{font-weight:700}
 </style>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://pinplug.kitifica.com/#website",
+      "url": "https://pinplug.kitifica.com/",
+      "name": "Pinterest Design Research",
+      "description": "Plugin de Claude Code que convierte un board de Pinterest curado en un Design System Brief citado.",
+      "inLanguage": "es",
+      "publisher": { "@id": "https://pinplug.kitifica.com/#organization" }
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://pinplug.kitifica.com/#software",
+      "name": "Pinterest Design Research",
+      "alternateName": "pinterest-design-research",
+      "url": "https://pinplug.kitifica.com/",
+      "image": "https://pinplug.kitifica.com/og-image.png",
+      "description": "Plugin de Claude Code que lee un board de Pinterest ya curado (250+ pines) y genera un Design System Brief citado con color, tipografía, layout, navegación, componentes, estados, motion y visualización de datos.",
+      "inLanguage": "es",
+      "applicationCategory": "DeveloperApplication",
+      "applicationSubCategory": "Design System Tool",
+      "operatingSystem": "Claude Code (macOS, Linux, Windows)",
+      "installUrl": "https://github.com/kitifica-max/kws",
+      "isAccessibleForFree": true,
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+        "availability": "https://schema.org/InStock"
+      },
+      "featureList": [
+        "Design System Brief citado",
+        "Design tokens en brief.md y tokens.json",
+        "Color, tipografía, layout y espaciado",
+        "Componentes, estados y navegación",
+        "Motion y micro-interacciones",
+        "Visualización de datos"
+      ],
+      "author": {
+        "@type": "Organization",
+        "name": "Kitifica",
+        "url": "https://github.com/kitifica-max"
+      },
+      "sameAs": ["https://github.com/kitifica-max/kws"]
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://pinplug.kitifica.com/#webpage",
+      "url": "https://pinplug.kitifica.com/",
+      "name": "Pinterest Design Research — Design System Brief con Claude",
+      "isPartOf": { "@id": "https://pinplug.kitifica.com/#website" },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://pinplug.kitifica.com/og-image.png",
+        "width": 1200,
+        "height": 630
+      },
+      "inLanguage": "es"
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <main>
 
   <div class="topbar">
     <div class="brand"><span class="mark"></span>pinterest-design-research</div>
-    <a class="btn" href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener" style="padding:9px 16px">GitHub ↗</a>
+    <a class="btn" href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener" style="padding:9px 16px"><svg class="ico" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2c2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2a4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6c-.6.6-.6 1.2-.5 2V21"/></svg>GitHub</a>
   </div>
 
-  <div class="hero">
-    <div class="cell r"><h1>Convierte tus pines</h1></div>
-    <div class="cell"><h1 style="color:var(--red)">en un design system</h1></div>
-  </div>
+  <h1 class="hero">
+    <span class="cell r">De lo mejor de UI en Pinterest</span>
+    <span class="cell accent">a un design system</span>
+  </h1>
 
   <div class="swatch-strip">
     <div class="sw" style="background:var(--red)"><span class="hex">#E60023</span></div>
@@ -252,7 +300,7 @@
 
   <div class="lead-row">
     <div class="cell l">
-      <p>El board de referencias ya está curado y creciendo. Instalas el plugin en cualquier proyecto y Claude mira cada pin guardado y lo convierte en un Design System Brief citado — color, tipografía, layout, componentes, motion.</p>
+      <p>De la inspiración a un artefacto: el board de referencias ya está curado y creciendo, así que solo dices qué construyes. Claude devuelve un Design System Brief citado — <code>brief.md</code> y <code>tokens.json</code> — con color, tipografía, layout, componentes y motion.</p>
     </div>
     <div class="cell">
       <div class="hero-actions">
@@ -265,17 +313,17 @@
   <div class="feat-strip" id="how">
     <div class="feat"><div class="blob drop" style="background:var(--red)"></div><h3>1 · Instalas el plugin</h3><p>Un comando. Nada que clonar.</p></div>
     <div class="feat"><div class="blob pill" style="background:var(--rust)"></div><h3>2 · Ya está conectado</h3><p>El board de referencias viene enlazado desde el instalar. Nada que configurar, ninguna cuenta que crear.</p></div>
-    <div class="feat"><div class="blob diamond" style="background:var(--tan)"></div><h3>3 · Dices qué construyes</h3><p>Claude ya tiene el board curado — 164+ pines y creciendo. No hay nada que pinear de cero.</p></div>
+    <div class="feat"><div class="blob diamond" style="background:var(--tan)"></div><h3>3 · Dices qué construyes</h3><p>Claude ya tiene el board curado — 250+ pines y creciendo. No hay nada que pinear de cero.</p></div>
     <div class="feat"><div class="blob clover" style="color:var(--maroon)"></div><h3>4 · Recibes el brief</h3><p>Color, tipografía, layout, nav, componentes, estados, motion — en <code>brief.md</code> y <code>tokens.json</code>.</p></div>
   </div>
 
   <div class="numsec">
     <div class="head gutter"><span class="no">01</span><h2>Prueba, no promesas</h2></div>
     <div class="body gutter">
-      <p class="section-lead">Cada claim de color o patrón cita su pin. Esto es un extracto real, de un board de 164 pines para un dashboard SaaS:</p>
+      <p class="section-lead">Cada claim de color o patrón cita su pin. Esto es un extracto real, de un board de 251 pines para un dashboard SaaS:</p>
       <div class="brief-card">
         <div class="title">Design System Brief — Kitifica SaaS Dashboard</div>
-        <div class="meta">164 pines curados · board "UI Reference"</div>
+        <div class="meta">251 pines curados · board "UI Reference"</div>
         <div class="tag-grid">
           <span class="tag">Color</span><span class="tag">Tipografía</span><span class="tag">Layout y espaciado</span>
           <span class="tag">Navegación</span><span class="tag">Componentes principales</span><span class="tag">Estados</span>
@@ -295,28 +343,28 @@
       <p class="section-lead">Es un plugin real de Claude Code — apunta tu marketplace a este repo una vez, instala por nombre.</p>
       <div class="codeblock">claude plugin marketplace add kitifica-max/kws
 claude plugin install pinterest-design-research@kws</div>
-      <p class="note">Dentro de una sesión funcionan igual como <code>/plugin marketplace add kitifica-max/kws</code> y <code>/plugin install pinterest-design-research@kws</code>. Ya queda listo para usarse — el skill se activa solo.</p>
+      <p class="note">Dentro de una sesión funcionan igual como <code>/plugin marketplace add kitifica-max/kws</code> y <code>/plugin install pinterest-design-research@kws</code>. Ya queda listo para usarse — el skill se activa solo. Sin OAuth, sin API keys y sin cuenta de Pinterest: las credenciales viven solo del lado del servidor.</p>
     </div>
   </div>
 
   <div class="numsec band2">
     <div class="head gutter"><span class="no">03</span><h2>Cómo se usa</h2></div>
     <div class="body gutter">
-      <p class="section-lead">No hay comando que memorizar. Dentro de Claude Code, en cualquier proyecto donde esté instalado, basta con pedirlo en texto normal:</p>
+      <p class="section-lead">No hay comando que memorizar. Dentro de Claude Code, en cualquier proyecto donde esté instalado, basta con pedirlo en texto normal — y cuanto más lo acotes (qué producto, qué tono, qué capas del system necesitas ahora), más preciso sale el brief:</p>
       <div class="say-it">
-        <p>"necesito referencias de UI para un dashboard SaaS tipo fintech"</p>
-        <p>"ayúdame a armar un style guide para la app de hábitos que estoy construyendo"</p>
-        <p>"convierte lo que tenemos pineado en design tokens para esta landing"</p>
-        <p>"¿qué dice el board sobre navegación mobile?"</p>
+        <p>"necesito un design system para un dashboard SaaS fintech: dark, sobrio y enterprise, con tablas y charts — prioriza color, tipografía y estados"</p>
+        <p>"armá el style guide de mi app de hábitos: mobile-first, cálida y juguetón — layout, componentes y motion con microinteracciones suaves"</p>
+        <p>"saca los tokens de color y tipografía para una landing de marketplace B2B: tono editorial, cálido, light por defecto"</p>
+        <p>"¿qué dice el board sobre navegación mobile para una app de finanzas — drawer lateral o bottom tabs?"</p>
       </div>
       <p class="invoke">Claude reconoce la intención solo — no hace falta nombrarlo. Para forzarlo explícito, también funciona <code>/pinterest-design-research:pinterest-design-research</code>.</p>
-      <p class="note">En cualquier caso toma las referencias ya guardadas del board — 164+ pines y creciendo — y escribe el brief citado para ese proyecto. No hay board propio que crear ni cuenta de Pinterest que conectar.</p>
+      <p class="note">En cualquier caso toma las referencias ya guardadas del board — 250+ pines y creciendo — y escribe el brief citado para ese proyecto. No hay board propio que crear ni cuenta de Pinterest que conectar.</p>
     </div>
   </div>
 
   <footer>
     <span>pinterest-design-research · plugin de Claude Code</span>
-    <a href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener">github.com/kitifica-max/kws ↗</a>
+    <a class="ext" href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener">github.com/kitifica-max/kws<svg class="ico-sm" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 7L7 17M8 7h9v9"/></svg></a>
   </footer>
 
 </main>

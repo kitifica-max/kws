@@ -1,10 +1,9 @@
-# Real secrets — never commit. Copy .env.example to .env and fill it in.
+# Local env overrides (PINTEREST_PROXY_URL etc.) — never commit secrets.
 .env
 .env.*
-!.env.example
 
 # Local design-research workspace output (pin images / manifests / briefs
-# are regenerated from the user's live Pinterest boards, not source).
+# are regenerated from the shared reference board, not source).
 design-research-workspace/
 __pycache__/
 *.pyc
@@ -12,3 +11,7 @@ __pycache__/
 # Netlify functions proxy (netlify/functions) — local dev artifacts.
 node_modules/
 .netlify/
+deno.lock
+
+# macOS Finder junk
+.DS_Store
