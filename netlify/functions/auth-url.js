@@ -1,4 +1,4 @@
-const { json, requireSecret } = require("./_lib");
+const { json, env, requireSecret } = require("./_lib");
 
 const AUTH_BASE = "https://www.pinterest.com/oauth/";
 const DEFAULT_SCOPES = "boards:read,pins:read";
@@ -6,8 +6,8 @@ const DEFAULT_SCOPES = "boards:read,pins:read";
 exports.handler = async (event) => {
   try {
     requireSecret(event);
-    const appId = process.env.PINTEREST_APP_ID;
-    const redirectUri = process.env.PINTEREST_REDIRECT_URI;
+    const appId = env("PINTEREST_APP_ID");
+    const redirectUri = env("PINTEREST_REDIRECT_URI");
     if (!appId || !redirectUri) {
       return json(500, { error: "PINTEREST_APP_ID / PINTEREST_REDIRECT_URI not configured on this site." });
     }

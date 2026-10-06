@@ -16,7 +16,7 @@ function json(statusCode, body) {
 }
 
 function requireSecret(event) {
-  const expected = process.env.PROXY_SHARED_SECRET;
+  const expected = env("PROXY_SHARED_SECRET");
   if (!expected) {
     throw { statusCode: 500, message: "PROXY_SHARED_SECRET is not configured on this site." };
   }
@@ -24,7 +24,10 @@ function requireSecret(event) {
     event.headers["x-proxy-secret"] ||
     event.headers["X-Proxy-Secret"] ||
     (event.queryStringParameters && event.queryStringParameters.secret);
-  if (got !== expected) {
+  // Trim both sides: a trailing newline/space picked up when copying the
+  // generated secret into Netlify's env var UI is a common, easy-to-miss
+  // way this comparison fails even with "the right" secret.
+  if (String(got || "").trim() !== String(expected || "").trim()) {
     throw { statusCode: 401, message: "Missing or invalid proxy secret." };
   }
 }
@@ -46,9 +49,14 @@ async function saveTokens(tokens) {
   await tokenStore().setJSON("tokens.json", tokens);
 }
 
+function env(key) {
+  const v = process.env[key];
+  return v == null ? v : v.trim();
+}
+
 async function oauthTokenRequest(grantFields) {
-  const appId = process.env.PINTEREST_APP_ID;
-  const appSecret = process.env.PINTEREST_APP_SECRET;
+  const appId = env("PINTEREST_APP_ID");
+  const appSecret = env("PINTEREST_APP_SECRET");
   if (!appId || !appSecret) {
     throw { statusCode: 500, message: "PINTEREST_APP_ID / PINTEREST_APP_SECRET not configured on this site." };
   }
@@ -167,6 +175,7 @@ async function checkBoardChange(boardId, accessToken, { commit = false } = {}) {
 
 module.exports = {
   json,
+  env,
   requireSecret,
   stateStore,
   getTokens,
