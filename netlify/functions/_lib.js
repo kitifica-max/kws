@@ -35,6 +35,31 @@ function requireSecret(event) {
   }
 }
 
+// Read endpoints are public (the plugin ships no secret), so they only ever
+// expose boards explicitly listed here. Configured as a comma-separated
+// PINTEREST_BOARD_IDS, falling back to the single PINTEREST_BOARD_ID.
+// Empty = nothing is exposed, which is the safe default for a fresh deploy.
+function allowedBoardIds() {
+  const raw = env("PINTEREST_BOARD_IDS") || env("PINTEREST_BOARD_ID") || "";
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
+
+function requireBoardAllowed(boardId) {
+  const ids = allowedBoardIds();
+  if (!ids.length) {
+    throw {
+      statusCode: 500,
+      message: "No PINTEREST_BOARD_IDS (or PINTEREST_BOARD_ID) configured on this site.",
+    };
+  }
+  if (!ids.includes(String(boardId))) {
+    throw { statusCode: 404, message: `Board ${boardId} is not exposed by this proxy.` };
+  }
+}
+
 function tokenStore() {
   return getStore("pinterest-tokens");
 }
@@ -181,6 +206,8 @@ module.exports = {
   env,
   connectLambda,
   requireSecret,
+  allowedBoardIds,
+  requireBoardAllowed,
   stateStore,
   getTokens,
   saveTokens,

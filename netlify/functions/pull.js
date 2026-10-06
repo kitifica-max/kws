@@ -1,11 +1,14 @@
-const { json, connectLambda, requireSecret, ensureAccessToken, pinterestGetAll, manifestEntry } = require("./_lib");
+// GET /api/pull?board_id=...   -> full pin metadata + image URLs for one board.
+// Public read: no shared secret (the plugin ships no credentials), but the
+// board must be on the proxy's allowlist — see requireBoardAllowed().
+const { json, connectLambda, requireBoardAllowed, ensureAccessToken, pinterestGetAll, manifestEntry } = require("./_lib");
 
 exports.handler = async (event) => {
   try {
     connectLambda(event);
-    requireSecret(event);
     const boardId = event.queryStringParameters && event.queryStringParameters.board_id;
     if (!boardId) return json(400, { error: "Missing ?board_id=..." });
+    requireBoardAllowed(boardId);
 
     const token = await ensureAccessToken();
     const sections = await pinterestGetAll(`/boards/${boardId}/sections`, token);
