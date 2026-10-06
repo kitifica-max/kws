@@ -1,6 +1,6 @@
 # Design System Brief — output template
 
-ALWAYS use this exact structure for the final brief (step 6 of the workflow).
+ALWAYS use this exact structure for the final brief (step 5 of the workflow).
 Omit a section only if the user explicitly said that layer doesn't matter for
 this project — don't pad it with generic filler if there's weak evidence;
 say the evidence is thin instead of inventing confidence.

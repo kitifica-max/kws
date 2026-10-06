@@ -1,12 +1,12 @@
 {
   "name": "pinterest-design-research",
   "displayName": "Pinterest Design Research",
-  "version": "1.0.0",
-  "description": "Turns a curated Pinterest board into a structured, cited Design System Brief — color, typography, layout, components, navigation, motion, data viz.",
+  "version": "1.1.0",
+  "description": "Turns a curated Pinterest board into a structured, cited Design System Brief — color, typography, layout, components, navigation, motion, data viz. No setup: no Pinterest account, no API keys, no OAuth.",
   "author": {
     "name": "kitifica-max"
   },
-  "homepage": "https://github.com/kitifica-max/kws",
+  "homepage": "https://pinplug.kitifica.com",
   "repository": "https://github.com/kitifica-max/kws",
   "keywords": ["design", "design-system", "pinterest", "ui", "ux"]
 }

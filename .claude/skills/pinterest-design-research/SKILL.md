@@ -1,6 +1,6 @@
 ---
 name: pinterest-design-research
-description: Turns the user's own Pinterest boards (via the Pinterest API v5) into a structured, citable Design System Brief — color tokens, type scale, spacing, component inventory, navigation patterns, motion/micro-interaction notes — for web apps, mobile apps, SaaS products, dashboards, landing pages and other digital products. Use this whenever the user mentions Pinterest, design inspiration, mood boards, UI/UX references, "design system from Pinterest", wants animation or interaction references, wants to turn visual references into a style guide or component library, or asks to organize/structure a Pinterest search or board for design work — even if they never say "design system" out loud. Also use it to set up Pinterest API OAuth credentials for this purpose.
+description: Turns a curated Pinterest board (read through a preconfigured proxy — no OAuth, no API keys, no Pinterest account for the user) into a structured, citable Design System Brief — color tokens, type scale, spacing, component inventory, navigation patterns, motion/micro-interaction notes — for web apps, mobile apps, SaaS products, dashboards, landing pages and other digital products. Use this whenever the user mentions Pinterest, design inspiration, mood boards, UI/UX references, "design system from Pinterest", wants animation or interaction references, wants to turn visual references into a style guide or component library, or asks to organize/structure a Pinterest search or board for design work — even if they never say "design system" out loud.
 ---
 
 # Pinterest Design Research
@@ -16,16 +16,23 @@ Pinterest account (`boards:read`, `pins:read`).
 So don't try to make Claude "search Pinterest." Instead, split the work the way each
 side is actually good at it:
 
-- **The human** searches and curates on pinterest.com itself, where Pinterest's real
+- **A human** searches and curates on pinterest.com itself, where Pinterest's real
   visual search and recommendation engine runs. A human saving 10 great pins after
   scrolling through hundreds is a *better* filter than any API call would be.
 - **Claude** turns that curated signal into something usable: pulls the pins
-  (images + metadata) via the API, looks at them, and writes a structured,
-  cited Design System Brief.
+  (images + metadata) through the plugin's proxy, looks at them, and writes a
+  structured, cited Design System Brief.
 
 Treat this as the actual value of the skill, not a workaround — curated boards are
 higher signal than raw search results precisely because a human already did the
 filtering.
+
+**Where the pins come from:** the human who did that filtering is the plugin's
+maintainer, not the person running a brief. This skill reads one shared,
+continuously curated reference board through a proxy the plugin already ships
+configured — no OAuth consent screen, no Pinterest developer app, no `.env`, no
+API keys. The user never connects a Pinterest account and never curates a board
+just to use the skill: the board (164+ pins and growing) is the corpus.
 
 ## Workflow
 
@@ -36,28 +43,25 @@ filtering.
    - Which design-system layers matter most right now — just visual style, or also
      motion/interaction, data viz, etc.
 
-**2. Build the curation plan.** Read `references/search-taxonomy.md` and
-   `references/curation-rules.md`, then hand the user a concrete checklist: one
-   Pinterest board for the project, one section per relevant design-system layer,
-   and 6-10 search queries per section to run themselves on pinterest.com. Tell
-   them the quality bar (from curation-rules.md) and to pin ~8-15 best examples per
-   section, then come back. This step produces no API calls — it's pure planning.
+**2. Pick the layers that matter.** Read `references/search-taxonomy.md` to map the
+   brief onto the design-system layers (color, typography, layout & spacing,
+   navigation, components, states, motion, data viz) × product archetype, and
+   `references/curation-rules.md` for what a pin must satisfy to count as evidence
+   for a layer. This step produces no API calls — it decides what to extract.
 
-**3. Make sure API access is set up.** If `.env` doesn't exist yet or the stored
-   token looks expired/missing, walk the user through
-   `references/api-reference.md` to create a Pinterest developer app and run the
-   OAuth helper below. Never ask the user to paste `access_token`, `refresh_token`,
-   `app_id` or `app_secret` into chat — those go straight into the local `.env`
-   file, not into the conversation.
+**3. Pull the board.** Use `scripts/pinterest_proxy_client.py`:
+   ```bash
+   python3 scripts/pinterest_proxy_client.py list-boards
+   python3 scripts/pinterest_proxy_client.py pull --out-dir pinterest-pull
+   ```
+   `pull` has no required flags — it defaults to the plugin's shared board. It
+   downloads each pin's largest image plus metadata into the workspace folder and
+   writes a `manifest.json` (pin_id → title, description, alt_text, link,
+   board/section, dominant_color, local image path) plus an `images/` folder.
+   Nothing to configure: the proxy URL is baked into the script. Only a self-hosted
+   proxy deployment needs anything else (`references/remote-proxy.md`).
 
-**4. Pull the curated data.** Use `scripts/pinterest_client.py` to list the
-   project's board/sections, list pins per section, and download each pin's
-   largest image + metadata into a local workspace folder (see script `-h` for
-   exact commands). This produces a `manifest.json` (pin_id → title, description,
-   alt_text, link, board/section, dominant_color, local image path) plus an
-   `images/` folder.
-
-**5. Look at the pins and analyze.** Read every downloaded image with its paired
+**4. Look at the pins and analyze.** Read every downloaded image with its paired
    metadata. For each design-system layer, extract concrete, specific observations
    — not "nice colors" but "a warm off-white background (#FAF8F3-ish) with a single
    saturated accent used only on primary CTAs." Cite the source pin (its link, or
@@ -66,46 +70,38 @@ filtering.
    scroll, transition, or micro-interaction, flag it in the brief and tell the user
    to check the live link if the exact motion detail matters.
 
-**6. Write the Design System Brief.** ALWAYS follow the exact structure in
+**5. Write the Design System Brief.** ALWAYS follow the exact structure in
    `references/design-system-output.md` — do not freelance the format. Every
    token or pattern claim needs at least one cited source pin. Save it to
    `design-system/<project-name>/brief.md` in the repo (plus `tokens.json` if the
    user wants machine-readable tokens too).
 
-**7. Treat curation as ongoing.** Boards aren't a one-shot input. Mention the
-   refresh cadence from `curation-rules.md` and offer to re-run steps 4-6 whenever
-   the user adds new pins.
+**6. Treat the board as ongoing.** The shared board grows constantly. Check
+   `status` first (one cheap call: did the pin count or last-modified change
+   since the last run?), then offer to re-run steps 3-5 when the user wants a
+   refresh — `pull --ack` records the state you just analyzed, and `pull` skips
+   images it already has, so only what's new costs anything.
 
 ## Reference files (read on demand, not all at once)
 
-- `references/api-reference.md` — how to create a Pinterest app, which scopes to
-  request, the OAuth flow, token lifetimes, the exact endpoints/fields this skill
-  uses, and the partner-search beta caveat. Read before the first API call.
 - `references/search-taxonomy.md` — the structured taxonomy of design-system
   layers × product archetypes, with ready-to-use search query templates. Read
-  while building the curation plan (step 2).
-- `references/curation-rules.md` — the quality bar for what to pin, board/section
-  naming conventions, and suggested refresh cadence. Read alongside the taxonomy.
+  while mapping the brief to layers (step 2).
+- `references/curation-rules.md` — the quality bar for what counts as evidence for
+  a layer, board/section naming conventions, and the refresh cadence the shared
+  board follows. Read alongside the taxonomy.
 - `references/design-system-output.md` — the exact Design System Brief template
-  and the optional `tokens.json` schema. Read before writing the brief (step 6).
-- `references/remote-proxy.md` — optional: a small Netlify Functions proxy that
-  holds Pinterest credentials/tokens server-side so any project only needs a URL
-  + shared secret (no per-project OAuth), plus a cheap `/api/status` endpoint for
-  detecting new pins on a schedule. Read when the user wants the skill usable
-  across projects without re-doing OAuth, or wants auto-refresh when they add
-  pins (step 7).
+  and the optional `tokens.json` schema. Read before writing the brief (step 5).
+- `references/remote-proxy.md` — owner/deployment docs for the Netlify proxy this
+  skill talks to: env vars it needs, how tokens are seeded once, and the board
+  allowlist that decides which boards the proxy exposes. Read only when deploying
+  or maintaining the proxy — never as part of a normal brief.
 
 ## Script
 
-- `scripts/pinterest_client.py` — a stdlib-only (no pip installs needed) Pinterest
-  API v5 client: OAuth auth-url/exchange/refresh, list boards/sections/pins, and
-  download pin images + write the manifest. Run `python3
-  scripts/pinterest_client.py -h` for subcommands. It reads/writes credentials in
-  the repo-root `.env` file directly — it never prints `access_token` or
-  `refresh_token` to stdout, and nothing routes those values through the
-  conversation.
-- `scripts/pinterest_proxy_client.py` — same `list-boards`/`pull` output shape,
-  but talks to the `references/remote-proxy.md` Netlify proxy instead of
-  Pinterest directly. Use this one once the proxy is deployed; it needs only
-  `PINTEREST_PROXY_URL` + `PINTEREST_PROXY_SECRET`, no Pinterest app
-  credentials locally. Also has a `status` subcommand for change detection.
+- `scripts/pinterest_proxy_client.py` — a stdlib-only (no pip installs needed)
+  client: `list-boards`, `pull` (pins + images + `manifest.json`) and `status`
+  (cheap change detection). The proxy URL is built in, so it works the moment the
+  plugin is installed — no credentials, no `.env`, and nothing auth-shaped ever
+  reaches the conversation. Run `python3 scripts/pinterest_proxy_client.py -h`
+  for subcommands; override the endpoint only with `PINTEREST_PROXY_URL`.

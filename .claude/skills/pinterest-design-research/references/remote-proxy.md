@@ -1,103 +1,99 @@
-# Remote proxy (Netlify) — shared credentials, no local OAuth
+# The proxy (Netlify) — owner & deployment notes
 
-This is an optional alternative to the local `.env` + `pinterest_client.py`
-setup in `api-reference.md`. Instead of every machine/project holding the
-Pinterest app id/secret and OAuth tokens, a small serverless proxy
-(`netlify/functions/`, in this repo) holds them, and every project talks to
-*that* instead — just a URL and a short shared secret, nothing OAuth-shaped.
+The plugin ships talking to one deployed proxy. Users never touch it beyond
+calling it; **everything credential-shaped lives server-side**, in that site's
+Netlify environment variables and Netlify Blobs. Nothing secret is in the repo,
+nothing secret runs on the user's machine, and nobody does OAuth.
+
+```
+skill (pinterest_proxy_client.py)  -->  https://<site>/api/*  -->  api.pinterest.com
+        no credentials                     allowlist               Pinterest app +
+                                                                  OAuth tokens (Blobs)
+```
 
 This also sidesteps network policies that block `api.pinterest.com` directly
 from a given environment (the proxy calls Pinterest from Netlify's
 infrastructure, not from wherever the skill is running).
 
-Use `scripts/pinterest_proxy_client.py` instead of `pinterest_client.py` once
-this is deployed — same `pull`/`list-boards` output shape, so the rest of the
-skill (steps 4–6) doesn't change.
+## Deploy (once, from the Netlify dashboard — Claude has no access to your
+## Netlify account)
 
-## One-time deploy (do this yourself in the Netlify dashboard — Claude has no
-## access to your Netlify account)
+1. On [app.netlify.com](https://app.netlify.com), **Add a new site → Import an
+   existing project**, connect the `kitifica-max/kws` GitHub repo, branch
+   `main`. Build command: leave blank. Publish directory: leave default —
+   Netlify reads `netlify.toml` for the functions config.
+2. **Site configuration → Environment variables**:
 
-1. On [app.netlify.com](https://app.netlify.com), **Add a new site → Import
-   an existing project**, connect the `kitifica-max/kws` GitHub repo, branch
-   `claude/friendly-cannon-b3d4uo` (or `main` once this is merged). Build
-   settings: no build command needed (leave blank), publish directory can
-   stay default — Netlify picks up `netlify.toml` automatically for the
-   functions config.
-2. Once the site exists, go to **Site configuration → Environment
-   variables** and add:
-   | Key | Value |
-   |---|---|
-   | `PINTEREST_APP_ID` | your existing Pinterest app's id |
-   | `PINTEREST_APP_SECRET` | your Pinterest app secret |
-   | `PINTEREST_REDIRECT_URI` | the redirect URI already registered on that app |
-   | `PROXY_SHARED_SECRET` | any long random string you make up — this is what every project uses instead of real Pinterest credentials |
-   | `PINTEREST_BOARD_ID` | `1115063257681091512` (the "UI Reference" board — used as the default for `/api/status`) |
-3. **Deploy site** (or trigger a redeploy after adding the env vars).
-4. **Enable Netlify Blobs**: no setup needed — it's automatic for any site
-   deployed on Netlify, used here to store the OAuth tokens server-side
-   (never in git, never in an env var you'd have to rotate by hand).
-5. Seed the tokens once, from your Mac (or anywhere with normal internet —
-   this is the only step that still needs a real browser + Pinterest login):
-   ```bash
-   curl "https://<your-site>.netlify.app/api/auth-url?secret=<PROXY_SHARED_SECRET>"
-   ```
-   Open the returned `url` in a browser, log in as `idealandidl`, approve,
-   copy the `?code=...` from the redirect, then:
-   ```bash
-   curl "https://<your-site>.netlify.app/api/exchange-code?secret=<PROXY_SHARED_SECRET>&code=<THE_CODE>"
-   ```
-   `{"ok":true,...}` means the proxy now holds working tokens and will
-   refresh them itself from then on — you never redo this unless Netlify
-   Blobs data is wiped.
+   | Key | Required | Value |
+   |---|---|---|
+   | `PINTEREST_APP_ID` | yes | your Pinterest app's id |
+   | `PINTEREST_APP_SECRET` | yes | your Pinterest app secret |
+   | `PINTEREST_REDIRECT_URI` | yes | the redirect URI registered on that app |
+   | `PINTEREST_BOARD_IDS` | yes | comma-separated board ids this proxy may expose — anything else is a `404`. Leave empty on purpose to expose nothing. |
+   | `PINTEREST_BOARD_ID` | recommended | default board for `/api/status` when no `?board_id=` is given (set it to the same id as above) |
+   | `PROXY_SHARED_SECRET` | yes | long random string — **admin only** (see below), never shipped in the plugin |
 
-## Using it from any project
+3. **Deploy site** (or redeploy after adding the vars).
+4. **Netlify Blobs** needs no setup — it's automatic, and stores the OAuth
+   tokens server-side (never in git, never in an env var you'd rotate by hand).
 
-Set just two values (same `.env` / `PINTEREST_DOTENV_PATH` mechanism as
-`api-reference.md`):
+## One-time token seeding (the only OAuth in the whole system)
 
-```
-PINTEREST_PROXY_URL=https://<your-site>.netlify.app
-PINTEREST_PROXY_SECRET=<PROXY_SHARED_SECRET>
-```
-
-Then:
+This is a **maintenance step for the proxy owner**, never something an end user
+or the skill runs. It needs a real browser + a Pinterest login, once per app:
 
 ```bash
-python3 scripts/pinterest_proxy_client.py list-boards
-python3 scripts/pinterest_proxy_client.py pull --board-id "1115063257681091512" --out-dir pinterest-pull --ack
+curl -H "x-proxy-secret: $PROXY_SHARED_SECRET" "https://<site>/api/auth-url"
 ```
 
-`--ack` on `pull` also tells the proxy "this is the version I just analyzed"
-— it updates the change-detection baseline (see below) so a later `status`
-check only flags pins added *after* this pull, not the ones already in it.
+Open the returned `url` in a browser, log in, approve, copy the `?code=...` from
+the redirect, then:
+
+```bash
+curl -H "x-proxy-secret: $PROXY_SHARED_SECRET" \
+  "https://<site>/api/exchange-code?code=<THE_CODE>"
+```
+
+`{"ok":true,...}` means the proxy holds working tokens and refreshes them itself
+from then on. Redo this only if the Blobs data is wiped or Pinterest revokes the
+refresh token.
 
 ## Endpoints
+
+Public reads — **no secret**, allowed only for boards on `PINTEREST_BOARD_IDS`:
+
+| Endpoint | Purpose |
+|---|---|
+| `GET /api/boards` | The exposed boards (id, name, pin count, last modified) |
+| `GET /api/pull?board_id=...` | Full pin metadata + image URLs for one board |
+| `GET /api/status?board_id=...` | Cheap check: did `pin_count` or `board_pins_modified_at` change since the last `ack`? |
+| `GET /api/status?board_id=...&ack=1` | Same, and also commits the current state as the new baseline |
+
+Admin — require `PROXY_SHARED_SECRET`, sent as the `x-proxy-secret` header
+(prefer it over `?secret=`, which ends up in logs):
 
 | Endpoint | Purpose |
 |---|---|
 | `GET /api/auth-url` | One-time: get the Pinterest OAuth URL |
-| `GET /api/exchange-code?code=...` | One-time: trade the auth code for tokens, stored in Netlify Blobs |
-| `GET /api/boards` | List boards (id, name, pin_count, board_pins_modified_at) |
-| `GET /api/pull?board_id=...` | Full pin metadata + image URLs for a board |
-| `GET /api/status?board_id=...` | Cheap check: did `pin_count` or `board_pins_modified_at` change since the last `ack`? |
-| `GET /api/status?board_id=...&ack=1` | Same, and also commits the current state as the new baseline |
+| `GET /api/exchange-code?code=...` | One-time: trade the auth code for tokens into Blobs |
 
-Every endpoint requires the shared secret, either as `?secret=...` or header
-`x-proxy-secret: ...`.
+Boards outside the allowlist are never listed, never pullable, and never
+checkable — the endpoint can't be used to enumerate the account's other boards,
+private names included. An empty `PINTEREST_BOARD_IDS` fails closed.
 
-## Auto-refresh (the Claude-side half)
+## Runaway usage
 
-The proxy only *detects* change — it has no way to run the visual analysis
-or rewrite `design-system/*/brief.md` itself (that needs Claude). The other
-half is a Claude Code Routine (a scheduled trigger) that wakes up every few
-hours, calls `/api/status`, and if `changed: true`, runs `pull --ack` and
-regenerates the brief. See the session that set this up for the exact
-Routine — `mcp__claude-code-remote__list_triggers` finds it if it's not
-obvious which one it is.
+The public reads are unauthenticated, so anyone who finds the site can pull the
+allowlisted board as fast as they like and spend **your** Pinterest app's rate
+limit (Pinterest's per-app quotas aren't published and vary by trust tier).
+Keep `PINTEREST_BOARD_IDS` to the one shared board, and if it ever becomes a
+problem, put Netlify's rate limiting / a WAF rule in front of `/api/pull`.
 
-**Important**: whatever environment that Routine fires into needs outbound
-network access to your Netlify site's domain (and nothing else Pinterest-
-related, since the proxy does the real Pinterest calls). If it's a cloud
-Claude Code environment with a restrictive network policy, add
-`<your-site>.netlify.app` to its allowed domains (environment settings →
-Network access → Custom), otherwise the Routine's check will fail silently.
+## Change detection from Claude's side
+
+The proxy only *detects* change — it can't run the visual analysis or rewrite
+`design-system/*/brief.md` (that needs Claude). The skill's `status` subcommand
+is the cheap check; when it reports `changed: true`, run `pull --ack` and
+regenerate the brief. If you wire that to a scheduled trigger, whatever
+environment it fires into needs outbound access to this site's domain — and
+nothing Pinterest-related, since the proxy does the real Pinterest calls.

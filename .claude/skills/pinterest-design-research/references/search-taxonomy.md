@@ -1,18 +1,21 @@
 # Search & board taxonomy
 
-This is the structure to hand the user in step 2 of the workflow. Don't just
-dump the whole table at them — pick the rows that match their product
-archetype and the layers they said matter, then present a short, concrete
-checklist.
+Two jobs: it decides **which design-system layers a given brief actually needs**
+(workflow step 2), and its layer names are exactly the **section names on the
+shared board** — so the sections that come back in `manifest.json` line up with
+the headings in `design-system-output.md` with no manual sorting.
 
 ## Board structure
 
-One Pinterest **board per project** (e.g. `design-ref · acme-dashboard`), one
-**section per design-system layer** that's actually relevant to that project.
-Sections matter, not just flat boards: the API can list pins per-section
-(`GET /boards/{id}/sections/{section_id}/pins`), so a well-sectioned board
-turns directly into a well-organized `manifest.json` later — no manual sorting
-needed on the Claude side.
+The plugin reads one shared board: `UI Reference`, one **section per
+design-system layer** (`Color & mood`, `Navigation`, `Motion &
+micro-interactions`, ...). Sections matter, not just a flat board: the proxy can
+list pins per-section (`GET /boards/{id}/sections/{section_id}/pins`), which is
+what turns a 160+ pin board into a brief organized by layer instead of one flat
+pile Claude has to re-sort by eye.
+
+Nobody curates a board to use the skill — the corpus is already curated. The
+taxonomy is used to *read* it, not to build it.
 
 ## Design-system layers × search query templates
 
@@ -52,8 +55,14 @@ adjectives (minimal, playful, enterprise, brutalist, warm, dense...).
 - **Marketplace**: core components (listing cards, filters), navigation
   (faceted search/filters), states (empty search results).
 
-## Turning this into a checklist for the user
+## Picking layers for a brief
 
-For each chosen layer: give 1 section name to create, 4-6 query templates
-filled in with their actual archetype/vibe, and the curation quality bar from
-`curation-rules.md`. Keep the ask achievable — 8-15 pins per section, not 100.
+For the user's archetype, name the 3-5 layers that usually matter most, confirm
+against what they said they need, and only then pull the board — a brief that
+tries to cover all ten layers at once reads like a summary of the board instead
+of a decision document for *their* product.
+
+The query templates stay useful even without an API: if the user wants to see
+what else exists in a layer, hand them the filled-in queries to run on
+pinterest.com themselves (visual search is still better than any API call — see
+`SKILL.md`), then have them paste or link what they find for Claude to fold in.
