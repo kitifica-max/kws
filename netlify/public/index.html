@@ -1,5 +1,289 @@
 <!doctype html>
+<html lang="es">
+<head>
 <meta charset="utf-8">
-<title>kws-pinterest-skill proxy</title>
-<p>This site has no pages — it only serves the <code>/api/*</code> functions
-for the <code>pinterest-design-research</code> Claude Code skill.</p>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pinterest Design Research</title>
+<meta name="description" content="Instala el plugin de Claude Code que convierte un board de Pinterest ya curado en un Design System Brief citado.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+  /* layout: ruled grid system (hairline-divided cells) + numbered full-bleed color-band
+     sections, lifted from a pin on the board itself ("Design & Code with Synergy") */
+  :root{
+    --bg:#F1EADA; --ink:#1C1712; --ink-dim:#6B5F4D; --line:rgba(28,23,18,.22);
+    --red:#E60023; --maroon:#7A1220; --charcoal:#241F1A; --rust:#A8471F; --tan:#C9AF7A;
+    --surface:#FAF6EC; --code-bg:#1C1712; --code-ink:#F1EADA;
+    color-scheme:light;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#16120D; --ink:#F1EADA; --ink-dim:#B2A58C; --line:rgba(241,234,218,.18);
+      --red:#FF4863; --maroon:#B8324A; --charcoal:#3A332B; --rust:#C97A4A; --tan:#D9C690;
+      --surface:#211B15; --code-bg:#0D0A07; --code-ink:#F1EADA;
+      color-scheme:dark;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#16120D; --ink:#F1EADA; --ink-dim:#B2A58C; --line:rgba(241,234,218,.18);
+    --red:#FF4863; --maroon:#B8324A; --charcoal:#3A332B; --rust:#C97A4A; --tan:#D9C690;
+    --surface:#211B15; --code-bg:#0D0A07; --code-ink:#F1EADA;
+    color-scheme:dark;
+  }
+
+  *{box-sizing:border-box}
+  @media (prefers-reduced-motion: reduce){ *{animation-duration:.001ms!important;transition-duration:.001ms!important} }
+  html,body{margin:0}
+  body{background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;padding:0;line-height:1.5}
+  main{width:100%}
+  h1,h2,h3{font-family:'Unbounded',system-ui,sans-serif;text-wrap:balance;margin:0}
+  a{color:inherit}
+  code,pre,.mono{font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace}
+  .gutter{padding-inline:20px}
+  @media (min-width:640px){ .gutter{padding-inline:40px} }
+
+  /* ---- topbar ---- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;
+    border-bottom:1.5px solid var(--line)}
+  @media (min-width:640px){ .topbar{padding:18px 40px} }
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px;font-family:'Unbounded',sans-serif}
+  .brand .mark{width:24px;height:24px;border-radius:50% 50% 50% 4px;background:var(--red);transform:rotate(-8deg)}
+  .topbar .hint{font-size:11px;color:var(--ink-dim);letter-spacing:.03em;font-family:ui-monospace,monospace}
+  .topbar .hint{display:none}
+  @media (min-width:560px){ .topbar .hint{display:block} }
+
+  /* ---- hero grid ---- */
+  .hero{display:grid;grid-template-columns:1fr 1fr}
+  @media (max-width:640px){ .hero{grid-template-columns:1fr} }
+  .hero .cell{padding:22px 20px;border-bottom:1.5px solid var(--line)}
+  @media (min-width:640px){ .hero .cell{padding:30px 40px} }
+  .hero .texture{background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:22px 22px;border-right:1.5px solid var(--line);
+    display:flex;align-items:center;justify-content:center;min-height:120px}
+  @media (max-width:640px){ .hero .texture{border-right:none;border-bottom:1.5px solid var(--line);min-height:90px} }
+  .hero h1{font-size:clamp(34px,6.4vw,58px);font-weight:700;line-height:.98;letter-spacing:-.01em}
+  .hero .cell.r{border-right:1.5px solid var(--line)}
+  @media (max-width:640px){ .hero .cell.r{border-right:none} }
+
+  .blob{width:54px;height:54px;flex:none}
+  .blob.drop{border-radius:50% 50% 50% 6px;transform:rotate(-12deg)}
+  .blob.pill{border-radius:999px;width:70px;height:40px}
+  .blob.diamond{border-radius:12px;transform:rotate(45deg);width:40px;height:40px}
+  .blob.clover{width:13px;height:13px;border-radius:50%;margin:11px 0 0 11px;background:currentColor;
+    box-shadow:17px 0 0 0 currentColor, 0 17px 0 0 currentColor, 17px 17px 0 0 currentColor}
+
+  .swatch-strip{display:grid;grid-template-columns:repeat(4,1fr)}
+  @media (max-width:640px){ .swatch-strip{grid-template-columns:repeat(2,1fr)} }
+  .swatch-strip .sw{min-height:116px;border-right:1.5px solid var(--line);border-bottom:1.5px solid var(--line);
+    display:flex;align-items:flex-end;padding:14px;position:relative}
+  .swatch-strip .sw:last-child{border-right:none}
+  @media (max-width:640px){ .swatch-strip .sw:nth-child(2n){border-right:none} }
+  .swatch-strip .sw .hex{font-family:ui-monospace,monospace;font-size:11px;font-weight:600;
+    background:rgba(0,0,0,.16);color:rgba(255,255,255,.92);padding:3px 8px;border-radius:999px}
+  .swatch-strip .sw.light .hex{background:rgba(0,0,0,.1);color:rgba(0,0,0,.78)}
+
+  .lead-row{display:grid;grid-template-columns:3fr 2fr}
+  @media (max-width:640px){ .lead-row{grid-template-columns:1fr} }
+  .lead-row .cell{padding:26px 20px;border-bottom:1.5px solid var(--line)}
+  @media (min-width:640px){ .lead-row .cell{padding:32px 40px} }
+  .lead-row .cell.l{border-right:1.5px solid var(--line)}
+  @media (max-width:640px){ .lead-row .cell.l{border-right:none} }
+  .lead-row p{font-size:16.5px;color:var(--ink-dim);margin:0;max-width:44ch}
+  .hero-actions{display:flex;gap:10px;flex-wrap:wrap;height:100%;align-items:center}
+
+  .btn{font:inherit;font-family:'Inter',sans-serif;font-weight:700;font-size:13.5px;padding:12px 20px;
+    border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);cursor:pointer;
+    text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:transform .15s ease}
+  .btn:hover{transform:translateY(-2px)}
+  .btn.primary{background:var(--ink);color:var(--bg)}
+
+  /* ---- feature strip (4 steps) ---- */
+  .feat-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1.5px solid var(--line)}
+  @media (max-width:640px){ .feat-strip{grid-template-columns:repeat(2,1fr)} }
+  .feat{padding:24px 18px;border-right:1.5px solid var(--line)}
+  .feat:last-child{border-right:none}
+  @media (max-width:640px){ .feat:nth-child(2n){border-right:none} .feat:nth-child(n+3){border-top:1.5px solid var(--line)} }
+  .feat .blob{margin-bottom:16px}
+  .feat h3{font-size:14.5px;font-weight:700;margin-bottom:6px;font-family:'Inter',sans-serif;letter-spacing:-.005em}
+  .feat p{font-size:12.5px;color:var(--ink-dim);margin:0;line-height:1.45}
+
+  /* ---- numbered sections ---- */
+  .numsec{border-bottom:1.5px solid var(--line)}
+  .numsec .head{display:flex;align-items:baseline;gap:16px;padding:28px 20px 6px}
+  @media (min-width:640px){ .numsec .head{padding:34px 40px 8px} }
+  .numsec .head .no{font-family:'Unbounded',sans-serif;font-weight:700;font-size:15px;opacity:.5}
+  .numsec .head h2{font-size:clamp(24px,4vw,34px);font-weight:700;letter-spacing:-.01em}
+  .numsec .body{padding:10px 20px 36px}
+  @media (min-width:640px){ .numsec .body{padding:10px 40px 44px} }
+  .numsec.band{background:var(--red);color:#FBEDEA}
+  .numsec.band2{background:var(--charcoal);color:#F1EADA}
+  .section-lead{color:var(--ink-dim);max-width:60ch;font-size:15.5px;margin-bottom:26px}
+  .numsec.band .section-lead, .numsec.band2 .section-lead{color:inherit;opacity:.75}
+
+  /* brief preview */
+  .brief-card{background:var(--surface);border:1.5px solid var(--line);border-radius:4px;padding:26px 28px}
+  .numsec.band .brief-card, .numsec.band2 .brief-card{background:rgba(255,255,255,.88);color:#1C1712;border-color:rgba(0,0,0,.12)}
+  .brief-card .title{font-family:'Unbounded',sans-serif;font-size:18px;font-weight:700;margin-bottom:5px}
+  .brief-card .meta{font-size:12.5px;color:var(--ink-dim);margin-bottom:18px}
+  .numsec.band .brief-card .meta, .numsec.band2 .brief-card .meta{color:#6B5F4D}
+  .tag-grid{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px}
+  .tag{font-size:11.5px;font-weight:700;padding:5px 11px;border-radius:999px;background:var(--bg);
+    border:1px solid var(--line);color:var(--ink-dim)}
+  .numsec.band .tag, .numsec.band2 .tag{background:#F1EADA;border-color:rgba(0,0,0,.12);color:#6B5F4D}
+  .quote{border-left:3px solid var(--red);padding-left:16px;font-size:14.5px;font-style:italic}
+  .quote cite{display:block;margin-top:8px;font-style:normal;font-size:12px;color:var(--ink-dim)}
+
+  /* install */
+  .codeblock{position:relative;background:var(--code-bg);color:var(--code-ink);border-radius:4px;
+    padding:13px 44px 13px 15px;font-size:12.5px;overflow-x:auto;white-space:pre}
+  .copy{position:absolute;top:8px;right:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+    color:var(--code-ink);font-size:10.5px;font-weight:700;border-radius:999px;padding:5px 10px;cursor:pointer;
+    font-family:'Inter',sans-serif}
+  .copy:hover{background:rgba(255,255,255,.18)}
+  .copy.copied{color:#8CE89C;border-color:#8CE89C}
+  .note{font-size:12.5px;color:var(--ink-dim);margin-top:14px;line-height:1.6}
+  .numsec.band .note, .numsec.band2 .note{color:inherit;opacity:.8}
+  .note code, .note strong{color:inherit}
+
+  .path-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5px;background:var(--line);border:1.5px solid var(--line);margin-top:4px}
+  @media (max-width:640px){ .path-grid{grid-template-columns:1fr} }
+  .path{background:var(--surface);padding:22px;border:1.5px solid var(--line);border-radius:4px}
+  .numsec.band2 .path{background:rgba(255,255,255,.88);color:#1C1712}
+  .path .badgeline{font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--red);margin-bottom:10px}
+  .path h3{font-size:16px;margin-bottom:4px;font-family:'Unbounded',sans-serif;font-weight:500}
+  .path .sub{font-size:12.5px;color:var(--ink-dim);margin-bottom:16px}
+  .numsec.band2 .path .sub{color:#6B5F4D}
+  .path ol{margin:0;padding-left:0;list-style:none;display:grid;gap:14px}
+  .path li{font-size:13.5px}
+  .path li .lbl{display:block;font-weight:700;margin-bottom:5px}
+
+  .say-it{background:var(--surface);border:1.5px solid var(--line);border-radius:4px;padding:18px 22px;font-size:15px;position:relative}
+  .say-it::before{content:"\201C";position:absolute;top:0;left:16px;font-family:'Unbounded',sans-serif;font-size:40px;color:var(--red);opacity:.4}
+  .say-it p{margin:0;padding-left:26px;font-style:italic;color:var(--ink)}
+  .say-it p + p{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line)}
+  .numsec.band .say-it, .numsec.band2 .say-it{background:rgba(255,255,255,.88);border-color:rgba(0,0,0,.12)}
+  .numsec.band .say-it p, .numsec.band2 .say-it p{color:#1C1712}
+  .invoke{font-size:12.5px;color:var(--ink-dim);margin-top:16px;line-height:1.6}
+  .invoke code{color:inherit;background:rgba(0,0,0,.08);padding:2px 6px;border-radius:4px}
+  .numsec.band .invoke code, .numsec.band2 .invoke code{background:rgba(255,255,255,.14)}
+
+  footer{padding:30px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+    font-size:12.5px;color:var(--ink-dim)}
+  @media (min-width:640px){ footer{padding:30px 40px} }
+  footer a{font-weight:700}
+</style>
+</head>
+<body>
+<main>
+
+  <div class="topbar">
+    <div class="brand"><span class="mark"></span>pinterest-design-research</div>
+    <a class="btn" href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener" style="padding:9px 16px">GitHub ↗</a>
+  </div>
+
+  <div class="hero">
+    <div class="cell r"><h1>Convierte tus pines</h1></div>
+    <div class="cell"><h1 style="color:var(--red)">en un design system</h1></div>
+  </div>
+
+  <div class="swatch-strip">
+    <div class="sw" style="background:var(--red)"><span class="hex">#E60023</span></div>
+    <div class="sw" style="background:var(--maroon)"><span class="hex">#7A1220</span></div>
+    <div class="sw" style="background:var(--charcoal)"><span class="hex">#241F1A</span></div>
+    <div class="sw light" style="background:var(--tan)"><span class="hex">#C9AF7A</span></div>
+  </div>
+
+  <div class="lead-row">
+    <div class="cell l">
+      <p>El board de referencias ya está curado y creciendo. Instalas el plugin en cualquier proyecto y Claude mira cada pin guardado y lo convierte en un Design System Brief citado — color, tipografía, layout, componentes, motion.</p>
+    </div>
+    <div class="cell">
+      <div class="hero-actions">
+        <a class="btn primary" href="#install">Instalar el plugin</a>
+        <a class="btn" href="#how">Cómo funciona</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="feat-strip" id="how">
+    <div class="feat"><div class="blob drop" style="background:var(--red)"></div><h3>1 · Instalas el plugin</h3><p>Un comando. Nada que clonar.</p></div>
+    <div class="feat"><div class="blob pill" style="background:var(--rust)"></div><h3>2 · Ya está conectado</h3><p>El board de referencias viene enlazado desde el instalar. Nada que configurar, ninguna cuenta que crear.</p></div>
+    <div class="feat"><div class="blob diamond" style="background:var(--tan)"></div><h3>3 · Dices qué construyes</h3><p>Claude ya tiene el board curado — 164+ pines y creciendo. No hay nada que pinear de cero.</p></div>
+    <div class="feat"><div class="blob clover" style="color:var(--maroon)"></div><h3>4 · Recibes el brief</h3><p>Color, tipografía, layout, nav, componentes, estados, motion — en <code>brief.md</code> y <code>tokens.json</code>.</p></div>
+  </div>
+
+  <div class="numsec">
+    <div class="head gutter"><span class="no">01</span><h2>Prueba, no promesas</h2></div>
+    <div class="body gutter">
+      <p class="section-lead">Cada claim de color o patrón cita su pin. Esto es un extracto real, de un board de 164 pines para un dashboard SaaS:</p>
+      <div class="brief-card">
+        <div class="title">Design System Brief — Kitifica SaaS Dashboard</div>
+        <div class="meta">164 pines curados · board "UI Reference"</div>
+        <div class="tag-grid">
+          <span class="tag">Color</span><span class="tag">Tipografía</span><span class="tag">Layout y espaciado</span>
+          <span class="tag">Navegación</span><span class="tag">Componentes principales</span><span class="tag">Estados</span>
+          <span class="tag">Movimiento</span><span class="tag">Visualización de datos</span>
+        </div>
+        <blockquote class="quote">
+          "El board converge en dos direcciones visuales que se repiten juntas, y este brief las trata como dos modos de un mismo sistema en vez de promediarlas: un modo 'enterprise' claro y estructurado … y un modo 'bold' oscuro y de alto contraste … Ambos comparten la misma gramática de componentes: tarjetas de estadísticas redondeadas, números de gran tamaño como elemento tipográfico dominante, y botones/tabs en forma de píldora."
+          <cite>— Resumen, brief de Kitifica SaaS Dashboard</cite>
+        </blockquote>
+      </div>
+    </div>
+  </div>
+
+  <div class="numsec band" id="install">
+    <div class="head gutter"><span class="no">02</span><h2>Un comando. Nada de clonar.</h2></div>
+    <div class="body gutter">
+      <p class="section-lead">Es un plugin real de Claude Code — apunta tu marketplace a este repo una vez, instala por nombre.</p>
+      <div class="codeblock">claude plugin marketplace add kitifica-max/kws
+claude plugin install pinterest-design-research@kws</div>
+      <p class="note">Dentro de una sesión funcionan igual como <code>/plugin marketplace add kitifica-max/kws</code> y <code>/plugin install pinterest-design-research@kws</code>. Ya queda listo para usarse — el skill se activa solo.</p>
+    </div>
+  </div>
+
+  <div class="numsec band2">
+    <div class="head gutter"><span class="no">03</span><h2>Cómo se usa</h2></div>
+    <div class="body gutter">
+      <p class="section-lead">No hay comando que memorizar. Dentro de Claude Code, en cualquier proyecto donde esté instalado, basta con pedirlo en texto normal:</p>
+      <div class="say-it">
+        <p>"necesito referencias de UI para un dashboard SaaS tipo fintech"</p>
+        <p>"ayúdame a armar un style guide para la app de hábitos que estoy construyendo"</p>
+        <p>"convierte lo que tenemos pineado en design tokens para esta landing"</p>
+        <p>"¿qué dice el board sobre navegación mobile?"</p>
+      </div>
+      <p class="invoke">Claude reconoce la intención solo — no hace falta nombrarlo. Para forzarlo explícito, también funciona <code>/pinterest-design-research:pinterest-design-research</code>.</p>
+      <p class="note">En cualquier caso toma las referencias ya guardadas del board — 164+ pines y creciendo — y escribe el brief citado para ese proyecto. No hay board propio que crear ni cuenta de Pinterest que conectar.</p>
+    </div>
+  </div>
+
+  <footer>
+    <span>pinterest-design-research · plugin de Claude Code</span>
+    <a href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener">github.com/kitifica-max/kws ↗</a>
+  </footer>
+
+</main>
+
+<script>
+  document.querySelectorAll('.codeblock').forEach(function(block){
+    var btn = document.createElement('button');
+    btn.className = 'copy';
+    btn.type = 'button';
+    btn.textContent = 'Copy';
+    btn.addEventListener('click', function(){
+      var text = block.textContent.replace(/Copy$/, '').trim();
+      function done(ok){
+        btn.textContent = ok ? 'Copied' : 'Select & copy';
+        btn.classList.toggle('copied', ok);
+        setTimeout(function(){ btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600);
+      }
+      try{
+        navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ done(false); });
+      }catch(e){ done(false); }
+    });
+    block.appendChild(btn);
+  });
+</script>
+</body>
+</html>
