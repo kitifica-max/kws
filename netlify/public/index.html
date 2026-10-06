@@ -133,6 +133,9 @@
     text-decoration:none;display:inline-flex;align-items:center;gap:7px;transition:transform .15s ease}
   .btn:hover{transform:translateY(-2px)}
   .btn.primary{background:var(--ink);color:var(--bg)}
+  .ico{width:16px;height:16px;display:block;flex:none}
+  .ico-sm{width:13px;height:13px;display:block;flex:none}
+  .ext{display:inline-flex;align-items:center;gap:4px}
 
   /* ---- feature strip (4 steps) ---- */
   .feat-strip{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1.5px solid var(--line)}
@@ -280,7 +283,7 @@
 
   <div class="topbar">
     <div class="brand"><span class="mark"></span>pinterest-design-research</div>
-    <a class="btn" href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener" style="padding:9px 16px">GitHub ↗</a>
+    <a class="btn" href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener" style="padding:9px 16px"><svg class="ico" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2c2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2a4.2 4.2 0 0 0-.1-3.2s-1.1-.3-3.5 1.3a12.3 12.3 0 0 0-6.2 0C6.5 2.8 5.4 3.1 5.4 3.1a4.2 4.2 0 0 0-.1 3.2A4.6 4.6 0 0 0 4 9.5c0 4.6 2.7 5.7 5.5 6c-.6.6-.6 1.2-.5 2V21"/></svg>GitHub</a>
   </div>
 
   <h1 class="hero">
@@ -361,7 +364,7 @@ claude plugin install pinterest-design-research@kws</div>
 
   <footer>
     <span>pinterest-design-research · plugin de Claude Code</span>
-    <a href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener">github.com/kitifica-max/kws ↗</a>
+    <a class="ext" href="https://github.com/kitifica-max/kws" target="_blank" rel="noopener">github.com/kitifica-max/kws<svg class="ico-sm" xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 7L7 17M8 7h9v9"/></svg></a>
   </footer>
 
 </main>
