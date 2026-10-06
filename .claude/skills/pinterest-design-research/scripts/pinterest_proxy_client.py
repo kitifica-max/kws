@@ -42,7 +42,11 @@ def call(path: str, params: dict = None) -> dict:
             return json.loads(resp.read().decode())
     except urllib.error.HTTPError as e:
         detail = e.read().decode(errors="replace")
-        sys.exit(f"Proxy error {e.code} on {path}: {detail}")
+        try:  # proxies answer {"error": "..."}; show the sentence, not the JSON
+            message = json.loads(detail).get("error") or detail
+        except (ValueError, AttributeError):
+            message = detail
+        sys.exit(f"Proxy error {e.code} on {path}: {message}")
 
 
 def download_file(url: str, dest: Path) -> None:

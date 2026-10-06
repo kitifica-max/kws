@@ -54,3 +54,7 @@ for the full workflow.
 Deploying or maintaining the proxy — env vars, the one-time token seed, and the
 board allowlist — lives in
 `.claude/skills/pinterest-design-research/references/remote-proxy.md`.
+
+## License
+
+MIT — see [LICENSE](LICENSE).

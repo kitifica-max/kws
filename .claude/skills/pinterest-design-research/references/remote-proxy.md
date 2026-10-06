@@ -32,6 +32,7 @@ infrastructure, not from wherever the skill is running).
    | `PINTEREST_BOARD_IDS` | yes | comma-separated board ids this proxy may expose — anything else is a `404`. Leave empty on purpose to expose nothing. |
    | `PINTEREST_BOARD_ID` | recommended | default board for `/api/status` when no `?board_id=` is given (set it to the same id as above) |
    | `PROXY_SHARED_SECRET` | yes | long random string — **admin only** (see below), never shipped in the plugin |
+   | `PROXY_CACHE_TTL` | no | seconds to memoize public reads (default `600`, `0` disables) |
 
 3. **Deploy site** (or redeploy after adding the vars).
 4. **Netlify Blobs** needs no setup — it's automatic, and stores the OAuth
@@ -84,10 +85,19 @@ private names included. An empty `PINTEREST_BOARD_IDS` fails closed.
 ## Runaway usage
 
 The public reads are unauthenticated, so anyone who finds the site can pull the
-allowlisted board as fast as they like and spend **your** Pinterest app's rate
-limit (Pinterest's per-app quotas aren't published and vary by trust tier).
-Keep `PINTEREST_BOARD_IDS` to the one shared board, and if it ever becomes a
-problem, put Netlify's rate limiting / a WAF rule in front of `/api/pull`.
+allowlisted board as fast as they like. Two things keep that from spending
+**your** Pinterest app rate limit:
+
+- Responses are memoized in Netlify Blobs — repeat calls inside the window cost
+  nothing against Pinterest. `PROXY_CACHE_TTL` (seconds, default `600`, `0`
+  disables) controls it; the board list behind `/api/status` is cached for a
+  fixed 60s.
+- `PINTEREST_BOARD_IDS` is a single shared board, so there's no way to walk
+  other boards or fan out into expensive requests.
+
+Pinterest's per-app quotas aren't published and vary by trust tier, so if this
+ever becomes a problem, put Netlify's rate limiting / a WAF rule in front of
+`/api/pull`.
 
 ## Change detection from Claude's side
 

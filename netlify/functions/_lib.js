@@ -68,6 +68,31 @@ function stateStore() {
   return getStore("pinterest-state");
 }
 
+function cacheStore() {
+  return getStore("pinterest-cache");
+}
+
+// Public reads are unauthenticated, so anything expensive is memoized here:
+// hammering /api/pull costs one Pinterest round-trip per TTL window instead of
+// one per request, which is what protects this app's Pinterest rate limit.
+// PROXY_CACHE_TTL is seconds (default 600, 0 disables).
+function cacheTtlSeconds(fallback = 600) {
+  const raw = Number(env("PROXY_CACHE_TTL"));
+  return Number.isFinite(raw) && env("PROXY_CACHE_TTL") !== "" ? raw : fallback;
+}
+
+async function cachedJson(key, ttlSeconds, produce) {
+  if (ttlSeconds > 0) {
+    const raw = await cacheStore().get(key, { type: "json" });
+    if (raw && Date.now() - raw.stored_at < ttlSeconds * 1000) return raw.value;
+  }
+  const value = await produce();
+  if (ttlSeconds > 0) {
+    await cacheStore().setJSON(key, { stored_at: Date.now(), value });
+  }
+  return value;
+}
+
 async function getTokens() {
   const raw = await tokenStore().get("tokens.json", { type: "json" });
   return raw || null;
@@ -99,7 +124,13 @@ async function oauthTokenRequest(grantFields) {
   });
   if (!res.ok) {
     const detail = await res.text();
-    throw { statusCode: 502, message: `Pinterest oauth/token error ${res.status}: ${detail}` };
+    throw {
+      statusCode: 502,
+      message:
+        res.status === 400 || res.status === 401 || res.status === 403
+          ? `Pinterest rejected this proxy's tokens (oauth/token ${res.status}). The proxy owner has to re-seed them once (see references/remote-proxy.md).`
+          : `Pinterest oauth/token error ${res.status}: ${detail}`,
+    };
   }
   return res.json();
 }
@@ -110,7 +141,7 @@ async function ensureAccessToken() {
     throw {
       statusCode: 428,
       message:
-        "No Pinterest tokens stored yet. Call /api/auth-url, approve access, then /api/exchange-code?code=... once.",
+        "This proxy has no Pinterest credentials yet. If you run the proxy, seed them once (references/remote-proxy.md). If you are using the plugin, tell its author — there is nothing you can configure on your side.",
     };
   }
   const now = Date.now() / 1000;
@@ -141,6 +172,18 @@ async function pinterestGetAll(path, accessToken, extraParams) {
     });
     if (!res.ok) {
       const detail = await res.text();
+      if (res.status === 429) {
+        throw {
+          statusCode: 429,
+          message: `Pinterest rate-limited this proxy (429 on ${path}). Wait a few minutes and retry — nothing is broken.`,
+        };
+      }
+      if (res.status >= 500) {
+        throw {
+          statusCode: 502,
+          message: `Pinterest is having trouble (${res.status} on ${path}). Retry in a few minutes.`,
+        };
+      }
       throw { statusCode: 502, message: `Pinterest API error ${res.status} on ${path}: ${detail}` };
     }
     const data = await res.json();
@@ -179,7 +222,11 @@ function manifestEntry(pin, sectionName) {
 }
 
 async function checkBoardChange(boardId, accessToken, { commit = false } = {}) {
-  const boards = await pinterestGetAll("/boards", accessToken);
+  // The board list is the whole cost of a status check, and status is the
+  // endpoint most likely to be polled — memoize it for a minute.
+  const boards = await cachedJson("boards-list", cacheTtlSeconds(60), () =>
+    pinterestGetAll("/boards", accessToken)
+  );
   const board = boards.find((b) => b.id === boardId);
   if (!board) {
     throw { statusCode: 404, message: `Board ${boardId} not found (or not owned by this account).` };
@@ -208,6 +255,8 @@ module.exports = {
   requireSecret,
   allowedBoardIds,
   requireBoardAllowed,
+  cacheTtlSeconds,
+  cachedJson,
   stateStore,
   getTokens,
   saveTokens,

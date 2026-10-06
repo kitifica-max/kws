@@ -58,11 +58,16 @@ just to use the skill: the board (164+ pins and growing) is the corpus.
    downloads each pin's largest image plus metadata into the workspace folder and
    writes a `manifest.json` (pin_id → title, description, alt_text, link,
    board/section, dominant_color, local image path) plus an `images/` folder.
+   Expect `section_count: 0`: the board is currently flat, so `section_name`
+   comes back `null` and grouping pins by layer is part of step 4 (see
+   `references/search-taxonomy.md`).
    Nothing to configure: the proxy URL is baked into the script. Only a self-hosted
    proxy deployment needs anything else (`references/remote-proxy.md`).
 
 **4. Look at the pins and analyze.** Read every downloaded image with its paired
-   metadata. For each design-system layer, extract concrete, specific observations
+   metadata, bucketing pins into the design-system layers from step 2 yourself
+   when `section_name` is `null`. For each layer, extract concrete, specific
+   observations
    — not "nice colors" but "a warm off-white background (#FAF8F3-ish) with a single
    saturated accent used only on primary CTAs." Cite the source pin (its link, or
    local filename if no link) for every claim. Pin descriptions/alt text are your
@@ -88,7 +93,8 @@ just to use the skill: the board (164+ pins and growing) is the corpus.
   layers × product archetypes, with ready-to-use search query templates. Read
   while mapping the brief to layers (step 2).
 - `references/curation-rules.md` — the quality bar for what counts as evidence for
-  a layer, board/section naming conventions, and the refresh cadence the shared
+  a layer, the (optional) board/section naming conventions, and the refresh
+  cadence the shared
   board follows. Read alongside the taxonomy.
 - `references/design-system-output.md` — the exact Design System Brief template
   and the optional `tokens.json` schema. Read before writing the brief (step 5).
