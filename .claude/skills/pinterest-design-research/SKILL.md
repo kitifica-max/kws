@@ -52,12 +52,21 @@ just to use the skill: the board (164+ pins and growing) is the corpus.
 **3. Pull the board.** Use `scripts/pinterest_proxy_client.py`:
    ```bash
    python3 scripts/pinterest_proxy_client.py list-boards
-   python3 scripts/pinterest_proxy_client.py pull --out-dir pinterest-pull
+   python3 scripts/pinterest_proxy_client.py pull --out-dir pinterest-pull --limit 40 --sample
    ```
-   `pull` has no required flags — it defaults to the plugin's shared board. It
-   downloads each pin's largest image plus metadata into the workspace folder and
-   writes a `manifest.json` (pin_id → title, description, alt_text, link,
-   board/section, dominant_color, local image path) plus an `images/` folder.
+   `pull` defaults to the plugin's shared board — the only required flag is
+   `--out-dir`. It downloads each pin's largest image plus metadata into the
+   workspace folder and writes a `manifest.json` (pin_id → title, description,
+   alt_text, link, board/section, dominant_color, local image path) plus an
+   `images/` folder.
+
+   The board is large and keeps growing, so don't default to pulling all of it:
+   start with `--limit 40 --sample` (40 pins spread evenly across the board) for
+   a first pass, write the brief from that, and only pull more — raise `--limit`
+   or drop it entirely — if a layer from step 2 still has weak evidence after
+   looking at the sample. `pull` also skips any image it already has on disk, so
+   widening the limit on a second run only costs what's new.
+
    Expect `section_count: 0`: the board is currently flat, so `section_name`
    comes back `null` and grouping pins by layer is part of step 4 (see
    `references/search-taxonomy.md`).
@@ -81,7 +90,19 @@ just to use the skill: the board (164+ pins and growing) is the corpus.
    `design-system/<project-name>/brief.md` in the repo (plus `tokens.json` if the
    user wants machine-readable tokens too).
 
-**6. Treat the board as ongoing.** The shared board grows constantly. Check
+**6. Publish a live preview Artifact.** Right after `brief.md` (and `tokens.json`
+   if written) are saved, build a Claude Artifact that applies the extracted
+   tokens to real-looking UI — color swatches, type scale, spacing scale, and a
+   few core components (buttons, cards, inputs, nav) assembled from the actual
+   values in `tokens.json`, not generic placeholders. This is how the user sees
+   the system *applied* instead of just reading numbers in a file. Follow
+   `references/design-system-artifact.md` for the required sections, load the
+   `artifact-design` skill first (environment requirement for any Artifact), and
+   publish it with the Artifact tool. Do this for every brief unless the user
+   says they don't want a preview — it isn't optional polish, it's the deliverable
+   that makes the brief legible.
+
+**7. Treat the board as ongoing.** The shared board grows constantly. Check
    `status` first (one cheap call: did the pin count or last-modified change
    since the last run?), then offer to re-run steps 3-5 when the user wants a
    refresh — `pull --ack` records the state you just analyzed, and `pull` skips
@@ -98,6 +119,8 @@ just to use the skill: the board (164+ pins and growing) is the corpus.
   board follows. Read alongside the taxonomy.
 - `references/design-system-output.md` — the exact Design System Brief template
   and the optional `tokens.json` schema. Read before writing the brief (step 5).
+- `references/design-system-artifact.md` — what the live preview Artifact must
+  contain and how it maps to `tokens.json`. Read before step 6.
 - `references/remote-proxy.md` — owner/deployment docs for the Netlify proxy this
   skill talks to: env vars it needs, how tokens are seeded once, and the board
   allowlist that decides which boards the proxy exposes. Read only when deploying
@@ -106,7 +129,8 @@ just to use the skill: the board (164+ pins and growing) is the corpus.
 ## Script
 
 - `scripts/pinterest_proxy_client.py` — a stdlib-only (no pip installs needed)
-  client: `list-boards`, `pull` (pins + images + `manifest.json`) and `status`
+  client: `list-boards`, `pull` (pins + images + `manifest.json`, with
+  `--limit`/`--sample` to avoid pulling the whole board every time) and `status`
   (cheap change detection). The proxy URL is built in, so it works the moment the
   plugin is installed — no credentials, no `.env`, and nothing auth-shaped ever
   reaches the conversation. Run `python3 scripts/pinterest_proxy_client.py -h`

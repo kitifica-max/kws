@@ -69,6 +69,17 @@ def cmd_status(args) -> None:
 def cmd_pull(args) -> None:
     result = call("/api/pull", {"board_id": args.board_id})
     pins = result["pins"]
+    total_available = len(pins)
+
+    if args.limit and args.limit < len(pins):
+        if args.sample:
+            # Evenly spaced picks across the whole board (oldest to newest)
+            # instead of always the same first N — better coverage of a
+            # growing board when you only want a quick first pass.
+            step = len(pins) / args.limit
+            pins = [pins[int(i * step)] for i in range(args.limit)]
+        else:
+            pins = pins[: args.limit]
 
     out_dir = Path(args.out_dir)
     images_dir = out_dir / "images"
@@ -88,7 +99,11 @@ def cmd_pull(args) -> None:
 
     manifest_path = out_dir / "manifest.json"
     manifest_path.write_text(json.dumps(manifest, indent=2))
-    print(f"Pulled {len(manifest)} pins across {result['section_count']} sections.")
+    if len(manifest) < total_available:
+        print(f"Pulled {len(manifest)} of {total_available} pins (limited) across {result['section_count']} sections.")
+        print(f"Re-run with a higher --limit, or without --limit, to pull the rest of the board.")
+    else:
+        print(f"Pulled {len(manifest)} pins across {result['section_count']} sections.")
     print(f"Manifest: {manifest_path}")
     print(f"Images: {images_dir}")
 
@@ -120,6 +135,19 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("pull", help="Pull a board's pins + download images + write a manifest")
     add_board_arg(p)
     p.add_argument("--out-dir", required=True)
+    p.add_argument(
+        "--limit",
+        type=int,
+        default=None,
+        help="Only download this many pins instead of the whole board. "
+        "Use it for a fast first pass; omit it to pull everything.",
+    )
+    p.add_argument(
+        "--sample",
+        action="store_true",
+        help="With --limit, spread the picks evenly across the whole board "
+        "instead of just taking the first N (better coverage on a growing board).",
+    )
     p.add_argument("--ack", action="store_true", help="Also acknowledge the proxy's change baseline after a successful pull")
     p.set_defaults(func=cmd_pull)
 
